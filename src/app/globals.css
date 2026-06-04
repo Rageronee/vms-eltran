@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #195192; /* Corporate Blue */
+  --color-primary-foreground: #ffffff;
+  --color-primary-hover: #003a71; /* Darker primary */
+  
+  --color-secondary: #EC1E25; /* Signal Red */
+  --color-secondary-foreground: #ffffff;
+  --color-secondary-hover: #bb0014;
+
+  --color-background: #f4f3f3;
+  --color-foreground: #1a1c1c;
+
+  --color-surface: #ffffff;
+  --color-surface-dim: #f9f9f9;
+  --color-surface-muted: #EEEEEE;
+
+  --color-border: #e2e2e2;
+  --color-input: #EEEEEE;
+  
+  --color-muted: #f4f3f3;
+  --color-muted-foreground: #737781;
+  
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  
+  --shadow-elegant: 0px 4px 20px rgba(0,0,0,0.05);
+}
+
+/* Custom background pattern from DESIGN.md */
+.bg-radar-pattern {
+  background-image: 
+    linear-gradient(rgba(236, 30, 37, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(236, 30, 37, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20;
+  }
+}
+
