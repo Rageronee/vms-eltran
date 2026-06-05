@@ -72,6 +72,7 @@ export default function DashboardLayout({
       { label: "Dashboard Utama", href: "/dashboard/vendor", icon: Home },
       { label: "Dokumen Legalitas", href: "/dashboard/vendor/legalitas", icon: FileText },
       { label: "Penawaran Proyek", href: "/dashboard/vendor/penawaran", icon: FileSignature },
+      { label: "Notifikasi Sistem", href: "/dashboard/vendor/notifikasi", icon: Bell },
       { label: "Profil Perusahaan", href: "/dashboard/vendor/profil", icon: UserCircle },
     ];
 

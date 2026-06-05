@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -139,10 +139,42 @@ export default function RegisterPage() {
     otherDocNumber: "",
     otherDocFile: "",
 
-    // Step 4: Supporting Documents
+    // Step 4: Supporting Documents & Products
     selfAssessmentFile: "",
+    brochureFile: "",
     agreeToStatementLetter: false,
   });
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem("vendorRegisterDraft");
+    if (savedDraft) {
+      try {
+        const { step: savedStep, formData: savedFormData } = JSON.parse(savedDraft);
+        if (savedStep) setStep(savedStep);
+        if (savedFormData) setFormData(savedFormData);
+      } catch (e) {
+        console.error("Failed to parse register draft", e);
+      }
+    }
+  }, []);
+
+  // Save to localStorage on change
+  const isInitialMount = useRef(true);
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    localStorage.setItem("vendorRegisterDraft", JSON.stringify({ step, formData }));
+  }, [step, formData]);
+
+  const handleFinalSubmit = () => {
+    // Clear draft on success
+    localStorage.removeItem("vendorRegisterDraft");
+    setIsPreviewOpen(false);
+    setIsSuccessOpen(true);
+  };
 
   const handleInputChange = (field: keyof typeof formData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -168,10 +200,6 @@ export default function RegisterPage() {
     setIsPreviewOpen(true);
   };
 
-  const handleFinalSubmit = () => {
-    setIsPreviewOpen(false);
-    setIsSuccessOpen(true);
-  };
 
   return (
     <>
@@ -366,21 +394,18 @@ export default function RegisterPage() {
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">Deed of Establishment</h3>
                         <Input
                           label="Deed Number"
-                          required
                           placeholder="Number"
                           value={formData.deedNumber}
                           onChange={(e) => handleInputChange("deedNumber", e.target.value)}
                         />
                         <Input
                           label="Establishment Date"
-                          required
                           type="date"
                           value={formData.deedDate}
                           onChange={(e) => handleInputChange("deedDate", e.target.value)}
                         />
                         <FileUploadInput
                           label="Upload Deed"
-                          required
                           placeholder="Deed of Establishment.pdf"
                           fileName={formData.deedFile}
                           onFileSelect={(name) => handleInputChange("deedFile", name)}
@@ -390,21 +415,18 @@ export default function RegisterPage() {
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">SK Kemenhumham</h3>
                         <Input
                           label="Number"
-                          required
                           placeholder="Number"
                           value={formData.skNumber}
                           onChange={(e) => handleInputChange("skNumber", e.target.value)}
                         />
                         <Input
                           label="Date"
-                          required
                           type="date"
                           value={formData.skDate}
                           onChange={(e) => handleInputChange("skDate", e.target.value)}
                         />
                         <FileUploadInput
                           label="Attachment"
-                          required
                           placeholder="SK Kemenhumhan.pdf"
                           fileName={formData.skFile}
                           onFileSelect={(name) => handleInputChange("skFile", name)}
@@ -468,14 +490,12 @@ export default function RegisterPage() {
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">NIB</h3>
                         <Input
                           label="Number"
-                          required
                           placeholder="Number"
                           value={formData.nibNumber}
                           onChange={(e) => handleInputChange("nibNumber", e.target.value)}
                         />
                         <Input
                           label="Date"
-                          required
                           type="date"
                           value={formData.nibDate}
                           onChange={(e) => handleInputChange("nibDate", e.target.value)}
@@ -484,7 +504,6 @@ export default function RegisterPage() {
                       <div className="space-y-6 md:pt-11 flex flex-col justify-end">
                         <FileUploadInput
                           label="Attachment"
-                          required
                           placeholder="NIB.pdf"
                           fileName={formData.nibFile}
                           onFileSelect={(name) => handleInputChange("nibFile", name)}
@@ -516,7 +535,6 @@ export default function RegisterPage() {
                       <div>
                         <Input
                           label="SKT Number"
-                          required
                           placeholder="SKT Number"
                           value={formData.sktNumber}
                           onChange={(e) => handleInputChange("sktNumber", e.target.value)}
@@ -524,7 +542,6 @@ export default function RegisterPage() {
                       </div>
                       <FileUploadInput
                         label="SKT Number Attachment"
-                        required
                         placeholder="SKT Number.pdf"
                         fileName={formData.sktFile}
                         onFileSelect={(name) => handleInputChange("sktFile", name)}
@@ -533,7 +550,6 @@ export default function RegisterPage() {
                       <div>
                         <Input
                           label="SKPP Number"
-                          required
                           placeholder="SKPP Number"
                           value={formData.skppNumber}
                           onChange={(e) => handleInputChange("skppNumber", e.target.value)}
@@ -541,7 +557,6 @@ export default function RegisterPage() {
                       </div>
                       <FileUploadInput
                         label="SKPP Number Attachment"
-                        required
                         placeholder="SKPP Number.pdf"
                         fileName={formData.skppFile}
                         onFileSelect={(name) => handleInputChange("skppFile", name)}
@@ -550,7 +565,6 @@ export default function RegisterPage() {
                       <div>
                         <Input
                           label="Latest Financial Report"
-                          required
                           placeholder="Latest Financial Report"
                           value={formData.financialReportNumber}
                           onChange={(e) => handleInputChange("financialReportNumber", e.target.value)}
@@ -558,7 +572,6 @@ export default function RegisterPage() {
                       </div>
                       <FileUploadInput
                         label="Latest Financial Report Attachment"
-                        required
                         placeholder="Latest Financial Report.pdf"
                         fileName={formData.financialReportFile}
                         onFileSelect={(name) => handleInputChange("financialReportFile", name)}
@@ -567,7 +580,6 @@ export default function RegisterPage() {
                       <div>
                         <Input
                           label="Other Legal Documents"
-                          required
                           placeholder="Other Legal Documents"
                           value={formData.otherDocNumber}
                           onChange={(e) => handleInputChange("otherDocNumber", e.target.value)}
@@ -575,7 +587,6 @@ export default function RegisterPage() {
                       </div>
                       <FileUploadInput
                         label="Other Legal Documents Attachment"
-                        required
                         placeholder="Other Legal Documents.pdf"
                         fileName={formData.otherDocFile}
                         onFileSelect={(name) => handleInputChange("otherDocFile", name)}
@@ -651,6 +662,28 @@ export default function RegisterPage() {
                             placeholder="Self Assessment Form.pdf"
                             fileName={formData.selfAssessmentFile}
                             onFileSelect={(name) => handleInputChange("selfAssessmentFile", name)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Full Width: Product Brochure / Catalog */}
+                    <div className="flex flex-col gap-6 md:col-span-2">
+                      <div className="space-y-4 border border-border/50 bg-blue-50/40 p-6 rounded-xl flex-1 flex flex-col justify-between">
+                        <div>
+                          <label className="text-sm font-bold text-primary tracking-wide uppercase block mb-2">
+                            Katalog Produk / Brosur
+                          </label>
+                          <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+                            Silakan unggah brosur, katalog, atau daftar barang/jasa yang perusahaan Anda tawarkan. Dokumen ini akan membantu tim kami memahami lini produk Anda secara lebih baik.
+                          </p>
+                        </div>
+                        <div className="max-w-md">
+                          <FileUploadInput
+                            label="Unggah Brosur / Katalog"
+                            placeholder="Brosur_Produk.pdf"
+                            fileName={formData.brochureFile}
+                            onFileSelect={(name) => handleInputChange("brochureFile", name)}
                           />
                         </div>
                       </div>
