@@ -89,7 +89,7 @@ export default function RegisterPage() {
     businessField: "",
     subBusinessField: "",
     ceoName: "",
-    
+
     // Step 2: Company Profile
     country: "Indonesia",
     province: "",
@@ -107,35 +107,35 @@ export default function RegisterPage() {
     deedNumber: "",
     deedDate: "",
     deedFile: "",
-    
+
     skNumber: "",
     skDate: "",
     skFile: "",
-    
+
     deedAmendmentNumber: "",
     deedAmendmentDate: "",
     deedAmendmentFile: "",
-    
+
     skAmendmentNumber: "",
     skAmendmentDate: "",
     skAmendmentFile: "",
-    
+
     nibNumber: "",
     nibDate: "",
     nibFile: "",
-    
+
     npwpNumber: "",
     npwpFile: "",
-    
+
     sktNumber: "",
     sktFile: "",
-    
+
     skppNumber: "",
     skppFile: "",
-    
+
     financialReportNumber: "",
     financialReportFile: "",
-    
+
     otherDocNumber: "",
     otherDocFile: "",
 
@@ -153,12 +153,12 @@ export default function RegisterPage() {
 
   const handleSubmitClick = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.agreeToStatementLetter) {
       setSubmitError("Anda harus menyetujui Statement Letter Agreement terlebih dahulu.");
       return;
     }
-    
+
     if (!formData.selfAssessmentFile) {
       setSubmitError("Silakan unggah dokumen Self-Assessment Form terlebih dahulu.");
       return;
@@ -179,7 +179,7 @@ export default function RegisterPage() {
       <div className="relative min-h-screen pb-24 flex flex-col bg-slate-50/50">
         {/* Decorative background */}
         <div className="absolute inset-x-0 top-0 -z-10 h-[500px] overflow-hidden pointer-events-none select-none">
-          <div className="absolute inset-0 bg-[url('/bg.jpg')] object-cover opacity-[0.03]" />
+          <div className="absolute inset-0 bg-[url('/bg.avif')] object-cover opacity-[0.03]" />
           <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-background" />
         </div>
 
@@ -210,50 +210,49 @@ export default function RegisterPage() {
                             key={r}
                             type="button"
                             onClick={() => handleInputChange("region", r)}
-                            className={`rounded-lg px-6 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer ${
-                              formData.region === r ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:text-primary"
-                            }`}
+                            className={`rounded-lg px-6 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer ${formData.region === r ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:text-primary"
+                              }`}
                           >
                             {r}
                           </button>
                         ))}
                       </div>
                     </div>
-                    
+
                     <div className="grid gap-8 md:grid-cols-2">
-                      <Input 
-                        label="Company Type" 
-                        required 
-                        placeholder="e.g. PT, CV, UD" 
+                      <Input
+                        label="Company Type"
+                        required
+                        placeholder="e.g. PT, CV, UD"
                         value={formData.companyType}
                         onChange={(e) => handleInputChange("companyType", e.target.value)}
                       />
-                      <Input 
-                        label="Company Name" 
-                        required 
-                        placeholder="e.g. Eltran Indonesia" 
+                      <Input
+                        label="Company Name"
+                        required
+                        placeholder="e.g. Eltran Indonesia"
                         value={formData.companyName}
                         onChange={(e) => handleInputChange("companyName", e.target.value)}
                       />
-                      <Input 
-                        label="Business Field" 
-                        required 
-                        placeholder="e.g. Telecommunications" 
+                      <Input
+                        label="Business Field"
+                        required
+                        placeholder="e.g. Telecommunications"
                         value={formData.businessField}
                         onChange={(e) => handleInputChange("businessField", e.target.value)}
                       />
-                      <Input 
-                        label="Sub Business Field" 
-                        required 
-                        placeholder="e.g. Fiber Optic Construction" 
+                      <Input
+                        label="Sub Business Field"
+                        required
+                        placeholder="e.g. Fiber Optic Construction"
                         value={formData.subBusinessField}
                         onChange={(e) => handleInputChange("subBusinessField", e.target.value)}
                       />
                       <div className="md:col-span-2">
-                        <Input 
-                          label="Company Owner / CEO Name" 
-                          required 
-                          placeholder="Full Name" 
+                        <Input
+                          label="Company Owner / CEO Name"
+                          required
+                          placeholder="Full Name"
                           value={formData.ceoName}
                           onChange={(e) => handleInputChange("ceoName", e.target.value)}
                         />
@@ -266,90 +265,90 @@ export default function RegisterPage() {
                 {step === 2 && (
                   <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="grid gap-8 md:grid-cols-2">
-                      <Input 
-                        label="Country" 
-                        required 
-                        placeholder="e.g. Indonesia" 
+                      <Input
+                        label="Country"
+                        required
+                        placeholder="e.g. Indonesia"
                         value={formData.country}
                         onChange={(e) => handleInputChange("country", e.target.value)}
                       />
-                      <Input 
-                        label="Province" 
-                        required 
-                        placeholder="e.g. Jawa Barat" 
+                      <Input
+                        label="Province"
+                        required
+                        placeholder="e.g. Jawa Barat"
                         value={formData.province}
                         onChange={(e) => handleInputChange("province", e.target.value)}
                       />
-                      <Input 
-                        label="City" 
-                        required 
-                        placeholder="e.g. Bandung" 
+                      <Input
+                        label="City"
+                        required
+                        placeholder="e.g. Bandung"
                         value={formData.city}
                         onChange={(e) => handleInputChange("city", e.target.value)}
                       />
-                      <Input 
-                        label="District" 
-                        required 
-                        placeholder="e.g. Coblong" 
+                      <Input
+                        label="District"
+                        required
+                        placeholder="e.g. Coblong"
                         value={formData.district}
                         onChange={(e) => handleInputChange("district", e.target.value)}
                       />
                       <div className="col-span-full">
-                        <Input 
-                          label="Full Address" 
-                          required 
-                          placeholder="Detailed street address, office suite, block..." 
+                        <Input
+                          label="Full Address"
+                          required
+                          placeholder="Detailed street address, office suite, block..."
                           value={formData.fullAddress}
                           onChange={(e) => handleInputChange("fullAddress", e.target.value)}
                         />
                       </div>
-                      <Input 
-                        label="Zip Code" 
-                        required 
-                        placeholder="e.g. 40135" 
+                      <Input
+                        label="Zip Code"
+                        required
+                        placeholder="e.g. 40135"
                         value={formData.zipCode}
                         onChange={(e) => handleInputChange("zipCode", e.target.value)}
                       />
                     </div>
-                    
+
                     <hr className="border-border/60" />
-                    
+
                     <div className="grid gap-8 md:grid-cols-2">
-                      <Input 
-                        label="Company Phone Number" 
-                        required 
-                        type="tel" 
-                        placeholder="+62..." 
+                      <Input
+                        label="Company Phone Number"
+                        required
+                        type="tel"
+                        placeholder="+62..."
                         value={formData.phone}
                         onChange={(e) => handleInputChange("phone", e.target.value)}
                       />
-                      <Input 
-                        label="Company Fax" 
-                        type="tel" 
-                        placeholder="+62..." 
+                      <Input
+                        label="Company Fax"
+                        type="tel"
+                        placeholder="+62..."
                         value={formData.fax}
                         onChange={(e) => handleInputChange("fax", e.target.value)}
                       />
-                      <Input 
-                        label="Company Email Address" 
-                        required 
-                        type="email" 
-                        placeholder="procurement@company.com" 
+                      <Input
+                        label="Company Email Address"
+                        required
+                        type="email"
+                        placeholder="procurement@company.com"
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
                       />
-                      <Input 
-                        label="Company Website" 
-                        type="url" 
-                        placeholder="https://company.com" 
+                      <Input
+                        label="Company Website"
+                        type="url"
+                        placeholder="https://company.com"
                         value={formData.website}
                         onChange={(e) => handleInputChange("website", e.target.value)}
                       />
                       <div className="col-span-full">
-                        <Input 
-                          label="Our Product / Services Description" 
-                          required 
-                          placeholder="Briefly describe products/services offered" 
+                        <Input
+                          label="Our Product / Services Description"
+                          required
+                          placeholder="Briefly describe products/services offered"
                           value={formData.description}
                           onChange={(e) => handleInputChange("description", e.target.value)}
                         />
@@ -365,48 +364,48 @@ export default function RegisterPage() {
                     <div className="grid gap-8 md:grid-cols-2">
                       <div className="space-y-6">
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">Deed of Establishment</h3>
-                        <Input 
-                          label="Deed Number" 
-                          required 
-                          placeholder="Number" 
+                        <Input
+                          label="Deed Number"
+                          required
+                          placeholder="Number"
                           value={formData.deedNumber}
                           onChange={(e) => handleInputChange("deedNumber", e.target.value)}
                         />
-                        <Input 
-                          label="Establishment Date" 
-                          required 
-                          type="date" 
+                        <Input
+                          label="Establishment Date"
+                          required
+                          type="date"
                           value={formData.deedDate}
                           onChange={(e) => handleInputChange("deedDate", e.target.value)}
                         />
-                        <FileUploadInput 
-                          label="Upload Deed" 
-                          required 
-                          placeholder="Deed of Establishment.pdf" 
+                        <FileUploadInput
+                          label="Upload Deed"
+                          required
+                          placeholder="Deed of Establishment.pdf"
                           fileName={formData.deedFile}
                           onFileSelect={(name) => handleInputChange("deedFile", name)}
                         />
                       </div>
                       <div className="space-y-6">
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">SK Kemenhumham</h3>
-                        <Input 
-                          label="Number" 
-                          required 
-                          placeholder="Number" 
+                        <Input
+                          label="Number"
+                          required
+                          placeholder="Number"
                           value={formData.skNumber}
                           onChange={(e) => handleInputChange("skNumber", e.target.value)}
                         />
-                        <Input 
-                          label="Date" 
-                          required 
-                          type="date" 
+                        <Input
+                          label="Date"
+                          required
+                          type="date"
                           value={formData.skDate}
                           onChange={(e) => handleInputChange("skDate", e.target.value)}
                         />
-                        <FileUploadInput 
-                          label="Attachment" 
-                          required 
-                          placeholder="SK Kemenhumhan.pdf" 
+                        <FileUploadInput
+                          label="Attachment"
+                          required
+                          placeholder="SK Kemenhumhan.pdf"
                           fileName={formData.skFile}
                           onFileSelect={(name) => handleInputChange("skFile", name)}
                         />
@@ -419,42 +418,42 @@ export default function RegisterPage() {
                     <div className="grid gap-8 md:grid-cols-2">
                       <div className="space-y-6">
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">Deed of Amendment</h3>
-                        <Input 
-                          label="Deed Number" 
-                          placeholder="Number" 
+                        <Input
+                          label="Deed Number"
+                          placeholder="Number"
                           value={formData.deedAmendmentNumber}
                           onChange={(e) => handleInputChange("deedAmendmentNumber", e.target.value)}
                         />
-                        <Input 
-                          label="Establishment Date" 
-                          type="date" 
+                        <Input
+                          label="Establishment Date"
+                          type="date"
                           value={formData.deedAmendmentDate}
                           onChange={(e) => handleInputChange("deedAmendmentDate", e.target.value)}
                         />
-                        <FileUploadInput 
-                          label="Upload Deed" 
-                          placeholder="Deed of Amendment.pdf" 
+                        <FileUploadInput
+                          label="Upload Deed"
+                          placeholder="Deed of Amendment.pdf"
                           fileName={formData.deedAmendmentFile}
                           onFileSelect={(name) => handleInputChange("deedAmendmentFile", name)}
                         />
                       </div>
                       <div className="space-y-6">
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">SK Kemenhumham</h3>
-                        <Input 
-                          label="Number" 
-                          placeholder="Number" 
+                        <Input
+                          label="Number"
+                          placeholder="Number"
                           value={formData.skAmendmentNumber}
                           onChange={(e) => handleInputChange("skAmendmentNumber", e.target.value)}
                         />
-                        <Input 
-                          label="Date" 
-                          type="date" 
+                        <Input
+                          label="Date"
+                          type="date"
                           value={formData.skAmendmentDate}
                           onChange={(e) => handleInputChange("skAmendmentDate", e.target.value)}
                         />
-                        <FileUploadInput 
-                          label="Attachment" 
-                          placeholder="SK Kemenhumhan.pdf" 
+                        <FileUploadInput
+                          label="Attachment"
+                          placeholder="SK Kemenhumhan.pdf"
                           fileName={formData.skAmendmentFile}
                           onFileSelect={(name) => handleInputChange("skAmendmentFile", name)}
                         />
@@ -467,26 +466,26 @@ export default function RegisterPage() {
                     <div className="grid gap-8 md:grid-cols-2">
                       <div className="space-y-6">
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">NIB</h3>
-                        <Input 
-                          label="Number" 
-                          required 
-                          placeholder="Number" 
+                        <Input
+                          label="Number"
+                          required
+                          placeholder="Number"
                           value={formData.nibNumber}
                           onChange={(e) => handleInputChange("nibNumber", e.target.value)}
                         />
-                        <Input 
-                          label="Date" 
-                          required 
-                          type="date" 
+                        <Input
+                          label="Date"
+                          required
+                          type="date"
                           value={formData.nibDate}
                           onChange={(e) => handleInputChange("nibDate", e.target.value)}
                         />
                       </div>
                       <div className="space-y-6 md:pt-11 flex flex-col justify-end">
-                        <FileUploadInput 
-                          label="Attachment" 
-                          required 
-                          placeholder="NIB.pdf" 
+                        <FileUploadInput
+                          label="Attachment"
+                          required
+                          placeholder="NIB.pdf"
                           fileName={formData.nibFile}
                           onFileSelect={(name) => handleInputChange("nibFile", name)}
                         />
@@ -498,86 +497,86 @@ export default function RegisterPage() {
                     {/* Section 4: Other Legal Documents */}
                     <div className="grid gap-x-8 gap-y-6 md:grid-cols-2 items-end">
                       <div>
-                        <Input 
-                          label="NPWP Number" 
-                          required 
-                          placeholder="NPWP Number" 
+                        <Input
+                          label="NPWP Number"
+                          required
+                          placeholder="NPWP Number"
                           value={formData.npwpNumber}
                           onChange={(e) => handleInputChange("npwpNumber", e.target.value)}
                         />
                       </div>
-                      <FileUploadInput 
-                        label="NPWP Number Attachment" 
-                        required 
-                        placeholder="NPWP Number.pdf" 
+                      <FileUploadInput
+                        label="NPWP Number Attachment"
+                        required
+                        placeholder="NPWP Number.pdf"
                         fileName={formData.npwpFile}
                         onFileSelect={(name) => handleInputChange("npwpFile", name)}
                       />
 
                       <div>
-                        <Input 
-                          label="SKT Number" 
-                          required 
-                          placeholder="SKT Number" 
+                        <Input
+                          label="SKT Number"
+                          required
+                          placeholder="SKT Number"
                           value={formData.sktNumber}
                           onChange={(e) => handleInputChange("sktNumber", e.target.value)}
                         />
                       </div>
-                      <FileUploadInput 
-                        label="SKT Number Attachment" 
-                        required 
-                        placeholder="SKT Number.pdf" 
+                      <FileUploadInput
+                        label="SKT Number Attachment"
+                        required
+                        placeholder="SKT Number.pdf"
                         fileName={formData.sktFile}
                         onFileSelect={(name) => handleInputChange("sktFile", name)}
                       />
 
                       <div>
-                        <Input 
-                          label="SKPP Number" 
-                          required 
-                          placeholder="SKPP Number" 
+                        <Input
+                          label="SKPP Number"
+                          required
+                          placeholder="SKPP Number"
                           value={formData.skppNumber}
                           onChange={(e) => handleInputChange("skppNumber", e.target.value)}
                         />
                       </div>
-                      <FileUploadInput 
-                        label="SKPP Number Attachment" 
-                        required 
-                        placeholder="SKPP Number.pdf" 
+                      <FileUploadInput
+                        label="SKPP Number Attachment"
+                        required
+                        placeholder="SKPP Number.pdf"
                         fileName={formData.skppFile}
                         onFileSelect={(name) => handleInputChange("skppFile", name)}
                       />
 
                       <div>
-                        <Input 
-                          label="Latest Financial Report" 
-                          required 
-                          placeholder="Latest Financial Report" 
+                        <Input
+                          label="Latest Financial Report"
+                          required
+                          placeholder="Latest Financial Report"
                           value={formData.financialReportNumber}
                           onChange={(e) => handleInputChange("financialReportNumber", e.target.value)}
                         />
                       </div>
-                      <FileUploadInput 
-                        label="Latest Financial Report Attachment" 
-                        required 
-                        placeholder="Latest Financial Report.pdf" 
+                      <FileUploadInput
+                        label="Latest Financial Report Attachment"
+                        required
+                        placeholder="Latest Financial Report.pdf"
                         fileName={formData.financialReportFile}
                         onFileSelect={(name) => handleInputChange("financialReportFile", name)}
                       />
 
                       <div>
-                        <Input 
-                          label="Other Legal Documents" 
-                          required 
-                          placeholder="Other Legal Documents" 
+                        <Input
+                          label="Other Legal Documents"
+                          required
+                          placeholder="Other Legal Documents"
                           value={formData.otherDocNumber}
                           onChange={(e) => handleInputChange("otherDocNumber", e.target.value)}
                         />
                       </div>
-                      <FileUploadInput 
-                        label="Other Legal Documents Attachment" 
-                        required 
-                        placeholder="Other Legal Documents.pdf" 
+                      <FileUploadInput
+                        label="Other Legal Documents Attachment"
+                        required
+                        placeholder="Other Legal Documents.pdf"
                         fileName={formData.otherDocFile}
                         onFileSelect={(name) => handleInputChange("otherDocFile", name)}
                       />
@@ -600,16 +599,16 @@ export default function RegisterPage() {
                           </p>
                         </div>
                         <div className="space-y-4">
-                          <Button 
-                            type="button" 
-                            variant="outline" 
+                          <Button
+                            type="button"
+                            variant="outline"
                             onClick={() => setIsStatementOpen(true)}
                             className="w-full bg-white hover:bg-surface-muted transition-colors cursor-pointer border-primary/20 hover:border-primary/50 text-primary flex items-center justify-center gap-2 py-5"
                           >
                             <FileText className="size-4" />
                             Baca Statement Letter Agreement
                           </Button>
-                          
+
                           <label className="flex items-center gap-3 cursor-pointer select-none border border-border/60 p-3 rounded-lg bg-white/50 hover:bg-white transition-colors">
                             <input
                               type="checkbox"
@@ -637,18 +636,18 @@ export default function RegisterPage() {
                           </p>
                         </div>
                         <div className="space-y-4">
-                          <Button 
-                            type="button" 
-                            variant="outline" 
+                          <Button
+                            type="button"
+                            variant="outline"
                             className="w-full bg-white hover:bg-surface-muted transition-colors cursor-pointer border-primary/20 hover:border-primary/50 text-primary flex items-center justify-center gap-2 py-5"
                           >
                             <FileText className="size-4" />
                             Unduh Template Self-Assessment
                           </Button>
-                          
-                          <FileUploadInput 
-                            label="Unggah Dokumen Self-Assessment" 
-                            required 
+
+                          <FileUploadInput
+                            label="Unggah Dokumen Self-Assessment"
+                            required
                             placeholder="Self Assessment Form.pdf"
                             fileName={formData.selfAssessmentFile}
                             onFileSelect={(name) => handleInputChange("selfAssessmentFile", name)}
@@ -676,18 +675,18 @@ export default function RegisterPage() {
                       onClick={back}
                       className="px-6 group cursor-pointer"
                     >
-                      <ChevronLeft className="size-4 mr-2 transition-transform group-hover:-translate-x-0.5" /> 
+                      <ChevronLeft className="size-4 mr-2 transition-transform group-hover:-translate-x-0.5" />
                       Kembali
                     </Button>
                   ) : (
                     <Button asChild variant="ghost" className="px-6 group cursor-pointer">
                       <Link href="/">
-                        <ChevronLeft className="size-4 mr-2 transition-transform group-hover:-translate-x-0.5" /> 
+                        <ChevronLeft className="size-4 mr-2 transition-transform group-hover:-translate-x-0.5" />
                         Kembali
                       </Link>
                     </Button>
                   )}
-                  
+
                   {step < 4 ? (
                     <Button
                       type="button"
@@ -722,10 +721,10 @@ export default function RegisterPage() {
             <h3 className="text-xl font-bold text-primary border-b border-border pb-4 uppercase tracking-wider">
               Statement Letter Agreement
             </h3>
-            
+
             <div className="flex-1 overflow-y-auto my-6 pr-2 space-y-4 text-sm text-slate-600 leading-relaxed">
               <p className="font-bold text-center text-slate-800 uppercase tracking-wide">
-                SURAT PERNYATAAN KEPATUHAN & INTEGRITAS VENDOR<br/>
+                SURAT PERNYATAAN KEPATUHAN & INTEGRITAS VENDOR<br />
                 PT ELTRAN INDONESIA
               </p>
               <p>
@@ -785,7 +784,7 @@ export default function RegisterPage() {
             <h3 className="text-xl font-bold text-primary border-b border-border pb-4 uppercase tracking-wider">
               Pratinjau Data Registrasi Vendor
             </h3>
-            
+
             <div className="flex-1 overflow-y-auto my-6 pr-2 space-y-6">
               <p className="text-xs text-muted-foreground leading-relaxed bg-blue-50 border border-blue-100 p-3 rounded-xl">
                 Mohon tinjau kembali data pendaftaran Anda sebelum dikirimkan. Data yang telah dikirimkan akan diproses oleh tim Procurement PT Eltran Indonesia untuk verifikasi.
@@ -916,7 +915,7 @@ export default function RegisterPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            
+
             <h3 className="text-xl font-bold text-primary mb-2 uppercase tracking-wide">
               Registrasi Dikirim!
             </h3>

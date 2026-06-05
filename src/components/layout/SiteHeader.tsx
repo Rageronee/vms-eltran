@@ -38,15 +38,15 @@ export function SiteHeader() {
         isScrolled
           ? "bg-white/95 border-b border-border/60 shadow-elegant py-3 backdrop-blur-md"
           : isLanding
-          ? "bg-transparent border-transparent py-4"
-          : "bg-primary border-transparent py-4"
+            ? "bg-transparent border-transparent py-4"
+            : "bg-primary border-transparent py-4"
       )}
     >
       <div className="w-full px-4 md:px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group cursor-pointer">
           <div className="transition-all duration-500">
             <Image
-              src="/eltran.png"
+              src="/logo_b.svg"
               alt="PT Eltran Indonesia Logo"
               width={140}
               height={40}

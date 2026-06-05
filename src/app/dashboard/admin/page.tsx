@@ -1,6 +1,19 @@
+"use client";
+
+import React, { useState } from "react";
 import { LayoutGrid, Download, Plus, Printer, ShieldCheck, Clock, RefreshCw, AlertOctagon, Eye } from "lucide-react";
+import { Select } from "@/components/ui/Select";
+import { useToast } from "@/components/ui/Toast";
+import { VendorDetailModal } from "@/components/ui/VendorDetailModal";
 
 export default function AdminDashboard() {
+  const { toast } = useToast();
+
+  const [pageSize, setPageSize] = useState("10");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedVendor, setSelectedVendor] = useState<any>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
   const vendors = [
     {
       name: "PT Sinar Tower Nusantara",
@@ -38,6 +51,41 @@ export default function AdminDashboard() {
       date: "25 May 2026",
     },
   ];
+
+  const pageSizeOptions = [
+    { value: "10", label: "10" },
+    { value: "25", label: "25" },
+    { value: "50", label: "50" },
+    { value: "100", label: "100" },
+  ];
+
+  const handleExportCSV = () => {
+    toast("Mengekspor berkas CSV database vendor...", "success");
+  };
+
+  const handleAddManual = () => {
+    toast("Fitur penambahan vendor manual membutuhkan hak akses SuperAdmin.", "warning");
+  };
+
+  const handlePrint = () => {
+    toast("Mempersiapkan dokumen cetak database vendor...", "info");
+  };
+
+  const handleDetail = (vendor: any) => {
+    setSelectedVendor(vendor);
+    setIsDetailOpen(true);
+  };
+
+  const handleVerifyVendor = (name: string) => {
+    toast(`Akun Mitra "${name}" telah diverifikasi sepenuhnya!`, "success");
+  };
+
+  // Filter vendors based on search query
+  const filteredVendors = vendors.filter((v) =>
+    v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    v.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    v.pic.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
@@ -79,42 +127,57 @@ export default function AdminDashboard() {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-4 mb-8">
-          <button className="flex items-center gap-2 bg-[#4FA0FF] hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-colors cursor-pointer shadow-sm shadow-blue-500/10">
+          <button
+            onClick={handleExportCSV}
+            className="flex items-center gap-2 bg-[#4FA0FF] hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-colors cursor-pointer shadow-sm shadow-blue-500/10"
+          >
             <Download className="size-4" /> Export Berkas CSV
           </button>
-          <button className="flex items-center gap-2 bg-[#48B365] hover:bg-green-600 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-colors cursor-pointer shadow-sm shadow-green-500/10">
+          <button
+            onClick={handleAddManual}
+            className="flex items-center gap-2 bg-[#48B365] hover:bg-green-600 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-colors cursor-pointer shadow-sm shadow-green-500/10"
+          >
             <Plus className="size-4" /> Tambah Vendor Manual
           </button>
-          <button className="flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 size-10 rounded-xl transition-colors cursor-pointer border border-border/50">
+          <button
+            onClick={handlePrint}
+            className="flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 size-10 rounded-xl transition-colors cursor-pointer border border-border/50"
+          >
             <Printer className="size-4" />
           </button>
         </div>
 
         {/* Table Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 text-xs font-semibold text-slate-600">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6 text-xs font-semibold text-slate-600">
+          {/* Custom Select pagination control */}
+          <div className="flex items-center gap-3 w-full sm:w-44 shrink-0">
             <span>Tampilkan</span>
-            <select className="border border-border/50 rounded-lg px-3 py-2 outline-none bg-slate-50 focus:border-primary focus:bg-white transition-colors cursor-pointer">
-              <option>10</option>
-              <option>25</option>
-              <option>50</option>
-              <option>100</option>
-            </select>
+            <div className="flex-1">
+              <Select
+                value={pageSize}
+                onChange={setPageSize}
+                options={pageSizeOptions}
+                placeholder="10"
+              />
+            </div>
             <span>entri</span>
           </div>
+
           <div className="flex items-center gap-3">
-            <label htmlFor="search" className="font-bold">Cari Vendor:</label>
+            <label htmlFor="search" className="font-bold shrink-0">Cari Vendor:</label>
             <input 
               id="search"
               type="text" 
               placeholder="Ketik nama vendor..."
-              className="border border-border/50 rounded-xl px-4 py-2 outline-none bg-slate-50 focus:bg-white focus:ring-1 focus:ring-primary/20 focus:border-primary/50 transition-all w-60"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="border border-border/50 rounded-xl px-4 py-2 h-12 outline-none bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary/10 focus:border-primary/50 transition-all w-60 font-semibold text-slate-800"
             />
           </div>
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto mb-6 border border-border/40 rounded-2xl shadow-inner bg-slate-50">
+        <div className="overflow-x-auto mb-6 border border-border/40 rounded-2xl bg-slate-50">
           <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
               <tr className="bg-slate-800 text-white/90 text-xs font-bold uppercase tracking-wider">
@@ -127,7 +190,7 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/40 bg-white text-xs">
-              {vendors.map((vendor, idx) => (
+              {filteredVendors.map((vendor, idx) => (
                 <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-4 px-6 font-bold text-slate-800">{vendor.name}</td>
                   <td className="py-4 px-6 font-medium text-slate-600">{vendor.category}</td>
@@ -157,20 +220,30 @@ export default function AdminDashboard() {
                   </td>
                   <td className="py-4 px-6 text-center">
                     <div className="flex justify-center gap-3">
-                      <button className="flex items-center gap-1 text-primary hover:text-primary-hover font-bold hover:underline cursor-pointer">
+                      <button
+                        onClick={() => handleDetail(vendor)}
+                        className="flex items-center gap-1 text-primary hover:text-primary-hover font-bold hover:underline cursor-pointer"
+                      >
                         <Eye className="size-3.5" /> Detail
                       </button>
                     </div>
                   </td>
                 </tr>
               ))}
+              {filteredVendors.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center text-slate-400 font-semibold">
+                    Tidak ditemukan data vendor yang cocok.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
         {/* Footer Pagination */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-semibold text-slate-500">
-          <p>Menampilkan 1 hingga 5 dari 5 entri (Disaring dari 1,256 total entri)</p>
+          <p>Menampilkan 1 hingga {filteredVendors.length} dari {filteredVendors.length} entri (Disaring dari 1,256 total entri)</p>
           
           <div className="flex items-center border border-border/50 rounded-xl overflow-hidden shadow-sm bg-white">
             <button className="px-4 py-2 hover:bg-slate-50 border-r border-border/50 transition-colors cursor-pointer text-slate-400 disabled:opacity-50" disabled>Sebelumnya</button>
@@ -181,6 +254,14 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Vendor Detail Modal */}
+      <VendorDetailModal
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        vendor={selectedVendor}
+        onVerify={handleVerifyVendor}
+      />
     </div>
   );
 }

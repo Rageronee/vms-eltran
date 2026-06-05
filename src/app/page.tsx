@@ -63,7 +63,7 @@ export default function Home() {
         {/* HERO - Full height and width (whole page) */}
         <section className="relative w-full h-screen min-h-[700px] flex items-center justify-center text-center px-6 overflow-hidden">
           <Image
-            src="/bg.jpg"
+            src="/bg.avif"
             alt="Background infrastructure"
             fill
             className="object-cover absolute inset-0 select-none pointer-events-none"
@@ -226,10 +226,10 @@ export default function Home() {
         {/* CTA */}
         <section className="w-full mt-32">
           <div className="relative overflow-hidden bg-gradient-to-r from-primary to-primary-hover py-16 md:py-20 px-6 lg:px-20 shadow-elegant flex flex-col md:flex-row items-center justify-between gap-12 text-center md:text-left">
-            <div className="absolute inset-0 bg-[url('/bg.jpg')] opacity-10 object-cover mix-blend-overlay pointer-events-none" />
+            <div className="absolute inset-0 bg-[url('/bg.avif')] opacity-10 object-cover mix-blend-overlay pointer-events-none" />
             <div className="relative z-10 max-w-2xl flex flex-col items-center md:items-start">
-              <div className="mb-6 bg-white/10 p-3 rounded-2xl backdrop-blur-sm w-fit">
-                <Image src="/eltran.png" alt="PT Eltran Indonesia" width={180} height={60} className="h-10 w-auto object-contain drop-shadow-md" />
+              <div className="mb-6 p-2 rounded-full w-fit">
+                <Image src="/logo_b.svg" alt="PT Eltran Indonesia" width={180} height={60} className="h-40 w-auto object-contain drop-shadow-md" />
               </div>
               <h3 className="text-3xl font-bold text-white md:text-5xl tracking-tight">Ready to become an Eltran partner?</h3>
               <p className="mt-6 text-lg leading-relaxed text-white/90">

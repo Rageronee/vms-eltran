@@ -1,6 +1,25 @@
-import { Home, Calendar, ShieldCheck, FileText, CheckCircle, Clock } from "lucide-react";
+"use client";
+
+import React, { useState } from "react";
+import { Home, Calendar, ShieldCheck, FileText, CheckCircle, Clock, UserCircle } from "lucide-react";
+import { ProjectDetailModal } from "@/components/ui/ProjectDetailModal";
+import { VendorRecheckModal } from "@/components/ui/VendorRecheckModal";
+import { useToast } from "@/components/ui/Toast";
 
 export default function VendorDashboard() {
+  const { toast } = useToast();
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isRecheckOpen, setIsRecheckOpen] = useState(false);
+  const handleProjectDetail = (project: any) => {
+    setSelectedProject(project);
+    setIsDetailOpen(true);
+  };
+
+  const handleDownloadProjectDoc = (docName: string) => {
+    toast(`Berhasil mengunduh dokumen proyek: "${docName}"`, "success");
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
       
@@ -49,9 +68,14 @@ export default function VendorDashboard() {
             <p className="text-xs text-muted-foreground mt-0.5">PT Sinar Tower Nusantara telah terverifikasi secara resmi untuk berpartisipasi dalam penawaran proyek PT Eltran Indonesia.</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs text-slate-400 font-medium">Kepatuhan Anti-Suap:</span>
-          <span className="inline-flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold border border-primary/20">
+        <div className="flex flex-wrap items-center gap-3 shrink-0">
+          <button
+            onClick={() => setIsRecheckOpen(true)}
+            className="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 border border-border/80 px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 cursor-pointer transition-colors"
+          >
+            Tinjau Data Pendaftaran
+          </button>
+          <span className="inline-flex items-center gap-1 bg-primary/10 text-primary px-3.5 py-1.5 rounded-xl text-xs font-bold border border-primary/20">
             ISO 37001 SMAP
           </span>
         </div>
@@ -170,7 +194,15 @@ export default function VendorDashboard() {
                   </span>
                 </td>
                 <td className="py-5 text-center">
-                  <button className="text-primary hover:text-primary-hover font-bold text-xs transition-colors hover:underline cursor-pointer">
+                  <button
+                    onClick={() => handleProjectDetail({
+                      name: "Pemasangan Infrastruktur Fiber Optic Jakarta - Bandung",
+                      contractNo: "ELT-FO-2025-089",
+                      progress: 75,
+                      status: "Berjalan Lancar"
+                    })}
+                    className="text-primary hover:text-primary-hover font-bold text-xs transition-colors hover:underline cursor-pointer"
+                  >
                     Detail
                   </button>
                 </td>
@@ -196,7 +228,15 @@ export default function VendorDashboard() {
                   </span>
                 </td>
                 <td className="py-5 text-center">
-                  <button className="text-primary hover:text-primary-hover font-bold text-xs transition-colors hover:underline cursor-pointer">
+                  <button
+                    onClick={() => handleProjectDetail({
+                      name: "Instalasi BTS Tower West Java Area - Phase II",
+                      contractNo: "ELT-BTS-2025-112",
+                      progress: 40,
+                      status: "Peninjauan Jadwal"
+                    })}
+                    className="text-primary hover:text-primary-hover font-bold text-xs transition-colors hover:underline cursor-pointer"
+                  >
                     Detail
                   </button>
                 </td>
@@ -205,9 +245,20 @@ export default function VendorDashboard() {
           </table>
         </div>
       </div>
+
+      {/* Project Detail Modal */}
+      <ProjectDetailModal
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        project={selectedProject}
+        onDownloadDoc={handleDownloadProjectDoc}
+      />
+
+      {/* Vendor Recheck Registration Data Modal */}
+      <VendorRecheckModal
+        isOpen={isRecheckOpen}
+        onClose={() => setIsRecheckOpen(false)}
+      />
     </div>
   );
 }
-
-// Re-map symbol layout details
-import { UserCircle } from "lucide-react";

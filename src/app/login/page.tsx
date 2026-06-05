@@ -39,15 +39,15 @@ export default function LoginPage() {
       <SiteHeader />
       <div className="relative min-h-screen flex flex-col bg-slate-50/50">
         {/* Decorative background */}
-        <div className="absolute inset-0 bg-[url('/bg.jpg')] opacity-[0.02] object-cover pointer-events-none select-none" />
-        
+        <div className="absolute inset-0 bg-[url('/bg.avif')] opacity-[0.02] object-cover pointer-events-none select-none" />
+
         <main className="flex-1 flex flex-col items-center justify-center px-6 pt-36 pb-16">
           <div className="relative z-10 w-full max-w-md bg-white rounded-[2rem] p-10 md:p-12 shadow-elegant border border-border/40 backdrop-blur-sm">
             <div className="text-center mb-8">
               <h1 className="text-2xl font-bold text-primary tracking-tight">Welcome Back</h1>
               <p className="mt-2 text-sm text-muted-foreground">Sign in to your vendor portal.</p>
             </div>
-            
+
             {error && (
               <div className="mb-6 p-4 rounded-xl bg-secondary/10 border border-secondary/20 flex items-start gap-3 text-secondary animate-in fade-in duration-300">
                 <AlertCircle className="size-5 shrink-0 mt-0.5" />
@@ -56,29 +56,29 @@ export default function LoginPage() {
             )}
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-              <Input 
-                label="Email Address" 
-                required 
-                type="email" 
+              <Input
+                label="Email Address"
+                required
+                type="email"
                 placeholder="you@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <Input 
-                label="Password" 
-                required 
-                type="password" 
+              <Input
+                label="Password"
+                required
+                type="password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              
+
               <Button className="w-full mt-6 group bg-primary hover:bg-primary-hover text-white cursor-pointer" size="lg" disabled={isLoading}>
                 {isLoading ? "Signing In..." : "Sign In"}
                 {!isLoading && <ArrowRight className="size-4 ml-2 transition-transform group-hover:translate-x-0.5" />}
               </Button>
             </form>
-            
+
             {/* Demo Credentials Box */}
             <div className="mt-6 bg-slate-50 border border-border/40 rounded-2xl p-4 text-left">
               <div className="flex items-start gap-2 text-xs text-muted-foreground">
