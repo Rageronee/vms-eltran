@@ -58,13 +58,13 @@ const FileUploadInput = ({
         >
           Upload
         </Button>
-        <span className="text-sm text-slate-700 px-4 truncate w-full">
+        <span className="flex-1 min-w-0 text-sm text-slate-700 px-4 truncate">
           {fileName ? (
-            <span className="font-semibold text-emerald-600 flex items-center gap-1.5">
+            <span className="font-semibold text-emerald-600 block truncate">
               ✓ {fileName}
             </span>
           ) : (
-            placeholder
+            <span className="block truncate">{placeholder}</span>
           )}
         </span>
       </div>
@@ -216,8 +216,8 @@ export default function RegisterPage() {
         </div>
 
         {/* Spacious Main Container with pt-36 offset for Fixed Header */}
-        <main className="flex-1 w-full max-w-[1100px] mx-auto px-6 pt-36 pb-12 lg:px-10">
-          <div className="rounded-4xl bg-white p-8 md:p-14 shadow-elegant border border-border/40 backdrop-blur-sm">
+        <main className="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-6 pt-36 pb-12 lg:px-10">
+          <div className="rounded-4xl bg-white p-5 sm:p-8 md:p-14 shadow-elegant border border-border/40 backdrop-blur-sm">
             <Stepper current={step} onJump={setStep} />
 
             <div className="mt-16 border-t border-border/60 pt-12">
@@ -691,7 +691,7 @@ export default function RegisterPage() {
                 )}
 
                 {/* Navigation Controls */}
-                <div className="mt-16 flex items-center justify-end gap-4 pt-8 border-t border-border/60">
+                <div className="mt-16 flex flex-col-reverse sm:flex-row items-center justify-between gap-4 pt-8 border-t border-border/60">
                   {step > 1 ? (
                     <Button
                       type="button"
@@ -724,7 +724,7 @@ export default function RegisterPage() {
                     <Button
                       type="submit"
                       onClick={handleSubmitClick}
-                      className="px-10 bg-secondary hover:bg-secondary-hover text-white shadow-elegant group cursor-pointer animate-pulse"
+                      className="w-full sm:w-auto px-10 bg-secondary hover:bg-secondary-hover text-white shadow-elegant group cursor-pointer animate-pulse"
                     >
                       Submit Registration
                       <ArrowRight className="size-4 ml-2 transition-transform group-hover:translate-x-0.5" />
@@ -741,7 +741,7 @@ export default function RegisterPage() {
       {/* MODAL 1: STATEMENT LETTER AGREEMENT */}
       {isStatementOpen && (
         <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 px-4">
-          <div className="relative max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8 md:p-10 animate-in zoom-in-95 duration-500 max-h-[85vh] flex flex-col">
+          <div className="relative max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 animate-in zoom-in-95 duration-500 max-h-[85vh] flex flex-col">
             <h3 className="text-xl font-bold text-primary border-b border-border pb-4 uppercase tracking-wider">
               Statement Letter Agreement
             </h3>
@@ -777,12 +777,12 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <div className="flex justify-end gap-4 border-t border-border pt-4 shrink-0">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-4 border-t border-border pt-4 shrink-0">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setIsStatementOpen(false)}
-                className="px-6 cursor-pointer"
+                className="w-full sm:w-auto px-6 cursor-pointer"
               >
                 Tutup
               </Button>
@@ -792,7 +792,7 @@ export default function RegisterPage() {
                   handleInputChange("agreeToStatementLetter", true);
                   setIsStatementOpen(false);
                 }}
-                className="px-6 bg-primary hover:bg-primary-hover text-white cursor-pointer"
+                className="w-full sm:w-auto px-6 bg-primary hover:bg-primary-hover text-white cursor-pointer"
               >
                 Setuju & Setujui Pernyataan
               </Button>
@@ -804,7 +804,7 @@ export default function RegisterPage() {
       {/* MODAL 2: PRATINJAU DATA REGISTRASI (PREVIEW MODAL) */}
       {isPreviewOpen && (
         <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 px-4">
-          <div className="relative max-w-3xl w-full bg-white rounded-3xl shadow-2xl p-8 md:p-10 animate-in zoom-in-95 duration-500 max-h-[90vh] flex flex-col">
+          <div className="relative max-w-3xl w-full bg-white rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 animate-in zoom-in-95 duration-500 max-h-[90vh] flex flex-col">
             <h3 className="text-xl font-bold text-primary border-b border-border pb-4 uppercase tracking-wider">
               Pratinjau Data Registrasi Vendor
             </h3>
@@ -925,12 +925,12 @@ export default function RegisterPage() {
               </label>
             </div>
 
-            <div className="flex justify-end gap-4 border-t border-border pt-4 shrink-0">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-4 border-t border-border pt-4 shrink-0 mt-4">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setIsPreviewOpen(false)}
-                className="px-6 cursor-pointer"
+                className="w-full sm:w-auto px-6 cursor-pointer"
               >
                 Kembali & Edit
               </Button>
@@ -938,7 +938,7 @@ export default function RegisterPage() {
                 type="button"
                 disabled={!dataConfirmed}
                 onClick={handleFinalSubmit}
-                className="px-8 bg-secondary hover:bg-secondary-hover text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-8 bg-secondary hover:bg-secondary-hover text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Konfirmasi & Kirim
               </Button>

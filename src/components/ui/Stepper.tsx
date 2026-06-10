@@ -17,14 +17,14 @@ export function Stepper({ current, onJump }: StepperProps) {
   return (
     <div className="w-full">
       <nav aria-label="Progress">
-        <ol role="list" className="grid grid-cols-2 lg:grid-cols-5 gap-3 justify-items-center">
+        <ol role="list" className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:justify-items-center pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 snap-x hide-scrollbar">
           {steps.map((label, idx) => {
             const stepNum = idx + 1;
             const isActive = stepNum === current;
             const isCompleted = stepNum < current;
             
             return (
-              <li key={label} className="w-full max-w-[200px]">
+              <li key={label} className="w-[160px] sm:w-full sm:max-w-[200px] shrink-0 snap-center">
                 <button
                   type="button"
                   onClick={() => onJump && onJump(stepNum)}
