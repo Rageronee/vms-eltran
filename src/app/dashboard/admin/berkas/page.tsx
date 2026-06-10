@@ -99,9 +99,9 @@ export default function BerkasMasukPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 px-4 sm:px-0">
       {/* Top Header Section */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
           <FolderOpen className="size-7" />
         </div>
@@ -112,10 +112,10 @@ export default function BerkasMasukPage() {
       </div>
 
       {/* Main card grid */}
-      <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-border/50 shadow-sm">
         
         {/* Search and Filter Panel */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 bg-slate-50 p-6 rounded-2xl border border-border/40">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 bg-slate-50 p-4 sm:p-6 rounded-2xl border border-border/40">
           {/* Quick Search */}
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-slate-400" />

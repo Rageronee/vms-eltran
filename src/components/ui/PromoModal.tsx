@@ -18,7 +18,7 @@ export function PromoModal() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 px-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 px-4">
       <div className="relative max-w-3xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500">
         <button
           onClick={() => setIsOpen(false)}
@@ -26,7 +26,7 @@ export function PromoModal() {
         >
           <X className="size-5" />
         </button>
-        <div className="relative w-full aspect-[4/3] md:aspect-[16/9]">
+        <div className="relative w-full aspect-4/3 md:aspect-video">
           <Image
             src="/POP UP.jpg"
             alt="Eltran Promo Announcement"

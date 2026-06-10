@@ -42,7 +42,7 @@ export function ProjectDetailModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 px-4">
+    <div className="fixed inset-0 z-1000 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 px-4">
       <div className="relative max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-6 md:p-8 animate-in zoom-in-95 duration-300 flex flex-col border border-border max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6 shrink-0">
@@ -79,7 +79,7 @@ export function ProjectDetailModal({
                 <span className="font-semibold text-slate-400 block">Nama Pekerjaan</span>
                 <span className="text-slate-800 font-bold mt-1.5 block leading-normal">{project.name}</span>
               </div>
-              <div className="grid grid-cols-2 gap-4 border-t border-slate-100 pt-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 pt-3.5">
                 <div>
                   <span className="font-semibold text-slate-400 block">Kemajuan Fisik</span>
                   <div className="flex items-center gap-2.5 mt-1.5">
@@ -110,7 +110,7 @@ export function ProjectDetailModal({
                   {/* Circle Indicator */}
                   <div
                     className={cn(
-                      "absolute -left-[27px] top-0 size-4.5 rounded-full border-2 bg-white flex items-center justify-center transition-all",
+                      "absolute left-[-27px] top-0 size-4.5 rounded-full border-2 bg-white flex items-center justify-center transition-all",
                       step.done
                         ? "border-primary bg-primary text-white"
                         : step.active
@@ -118,7 +118,7 @@ export function ProjectDetailModal({
                         : "border-slate-200 bg-white text-slate-400"
                     )}
                   >
-                    {step.done && <CheckCircle2 className="size-3 stroke-[3]" />}
+                    {step.done && <CheckCircle2 className="size-3 stroke-3" />}
                   </div>
                   <div>
                     <span className={cn("font-bold text-slate-800", !step.done && !step.active && "text-slate-400")}>

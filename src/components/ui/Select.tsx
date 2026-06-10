@@ -53,7 +53,7 @@ export function Select({
     <div className="flex flex-col gap-2 w-full" ref={containerRef}>
       {label && (
         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-          {label} {required && <span className="text-[#EC1E25]">*</span>}
+          {label} {required && <span className="text-secondary">*</span>}
         </label>
       )}
       <div className="relative">

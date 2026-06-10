@@ -48,7 +48,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
       
       {/* Toast container */}
-      <div className="fixed bottom-6 right-6 z-[999] flex flex-col gap-3 max-w-md w-full pointer-events-none">
+      <div className="fixed bottom-6 right-6 z-999 flex flex-col gap-3 max-w-md w-full pointer-events-none">
         {toasts.map((t) => {
           const Icon = {
             success: CheckCircle,

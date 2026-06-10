@@ -71,39 +71,6 @@ export default function LegalitasPage() {
         </div>
       </div>
 
-      {/* Notifications Section */}
-      <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm">
-        <h2 className="text-lg font-bold text-slate-800 mb-6">Notifications</h2>
-        <div className="space-y-4">
-          
-          <div className="flex items-start gap-4 p-5 bg-primary/5 rounded-2xl border border-primary/10 transition-all hover:shadow-md">
-            <div className="p-2.5 bg-white text-primary rounded-xl shadow-sm shrink-0">
-              <Calendar className="size-6" />
-            </div>
-            <div className="flex-1">
-              <h4 className="text-sm font-bold text-slate-800">SPH Upload</h4>
-              <p className="text-xs text-slate-600 mt-1">Segera unggah dokumen SPH (Surat Penawaran Harga) untuk proyek pemasangan Fiber Optic yang baru diajukan. Tenggat waktu tersisa 3 hari.</p>
-            </div>
-            <button className="shrink-0 text-xs font-bold bg-white text-primary border border-primary/20 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors cursor-pointer">
-              Lihat Detail
-            </button>
-          </div>
-
-          <div className="flex items-start gap-4 p-5 bg-primary/5 rounded-2xl border border-primary/10 transition-all hover:shadow-md">
-            <div className="p-2.5 bg-white text-primary rounded-xl shadow-sm shrink-0">
-              <Calendar className="size-6" />
-            </div>
-            <div className="flex-1">
-              <h4 className="text-sm font-bold text-slate-800">Company Legality Documents</h4>
-              <p className="text-xs text-slate-600 mt-1">Sertifikat Badan Usaha (SBU) Anda akan segera kedaluwarsa bulan depan. Harap perbarui dokumen tersebut agar status verified Anda tidak dicabut.</p>
-            </div>
-            <button className="shrink-0 text-xs font-bold bg-white text-primary border border-primary/20 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors cursor-pointer">
-              Perbarui
-            </button>
-          </div>
-
-        </div>
-      </div>
 
       {/* Quick Access */}
       <div>

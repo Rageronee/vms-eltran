@@ -42,7 +42,7 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-[url('/bg.avif')] opacity-[0.02] object-cover pointer-events-none select-none" />
 
         <main className="flex-1 flex flex-col items-center justify-center px-6 pt-36 pb-16">
-          <div className="relative z-10 w-full max-w-md bg-white rounded-[2rem] p-10 md:p-12 shadow-elegant border border-border/40 backdrop-blur-sm">
+          <div className="relative z-10 w-full max-w-md bg-white rounded-4xl p-10 md:p-12 shadow-elegant border border-border/40 backdrop-blur-sm">
             <div className="text-center mb-8">
               <h1 className="text-2xl font-bold text-primary tracking-tight">Welcome Back</h1>
               <p className="mt-2 text-sm text-muted-foreground">Sign in to your vendor portal.</p>
@@ -92,7 +92,7 @@ export default function LoginPage() {
                       <span className="block">Pass: <code>admin</code></span>
                     </div>
                     <div>
-                      <span className="font-bold text-[#EC1E25] block mb-0.5">Vendor Access:</span>
+                      <span className="font-bold text-secondary block mb-0.5">Vendor Access:</span>
                       <span className="block">Email: <code>vendor@eltran.id</code></span>
                       <span className="block">Pass: <code>vendor</code></span>
                     </div>

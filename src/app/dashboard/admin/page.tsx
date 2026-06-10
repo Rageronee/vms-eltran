@@ -88,7 +88,7 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 px-4 sm:px-0">
       
       {/* Top Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
         </div>
         
         {/* Quick Stats Badges */}
-        <div className="flex gap-3 text-xs font-bold text-slate-600 bg-white p-3 rounded-2xl border border-border/50 shadow-sm shrink-0">
+        <div className="flex flex-wrap gap-3 text-xs font-bold text-slate-600 bg-white p-3 rounded-2xl border border-border/50 shadow-sm shrink-0">
           <span className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg border border-emerald-100">
             2 Terverifikasi
           </span>
@@ -117,7 +117,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Main Table Card */}
-      <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-border/50 shadow-sm">
         
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-[15px] font-bold text-primary uppercase tracking-wider">Dataset Pendaftaran Mitra</h2>
@@ -163,7 +163,7 @@ export default function AdminDashboard() {
             <span>entri</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto">
             <label htmlFor="search" className="font-bold shrink-0">Cari Vendor:</label>
             <input 
               id="search"
@@ -171,7 +171,7 @@ export default function AdminDashboard() {
               placeholder="Ketik nama vendor..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="border border-border/50 rounded-xl px-4 py-2 h-12 outline-none bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary/10 focus:border-primary/50 transition-all w-60 font-semibold text-slate-800"
+              className="border border-border/50 rounded-xl px-4 py-2 h-12 outline-none bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary/10 focus:border-primary/50 transition-all w-full sm:w-60 font-semibold text-slate-800"
             />
           </div>
         </div>

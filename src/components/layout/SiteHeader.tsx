@@ -56,7 +56,7 @@ export function SiteHeader() {
           </div>
           <span
             className={cn(
-              "text-md font-bold tracking-[0.10em] uppercase transition-colors duration-500",
+              "text-md font-bold tracking-widest uppercase transition-colors duration-500",
               isScrolled ? "text-primary" : "text-white"
             )}
           >
@@ -69,7 +69,7 @@ export function SiteHeader() {
             <Link
               href="/#features"
               className={cn(
-                "text-xs font-bold tracking-wider uppercase transition-colors duration-300 hover:text-[#EC1E25] cursor-pointer",
+                "text-xs font-bold tracking-wider uppercase transition-colors duration-300 hover:text-secondary cursor-pointer",
                 isScrolled ? "text-primary/75" : "text-white/75"
               )}
             >
@@ -78,7 +78,7 @@ export function SiteHeader() {
             <Link
               href="/register"
               className={cn(
-                "text-xs font-bold tracking-wider uppercase transition-colors duration-300 hover:text-[#EC1E25] cursor-pointer",
+                "text-xs font-bold tracking-wider uppercase transition-colors duration-300 hover:text-secondary cursor-pointer",
                 isScrolled ? "text-primary/75" : "text-white/75"
               )}
             >

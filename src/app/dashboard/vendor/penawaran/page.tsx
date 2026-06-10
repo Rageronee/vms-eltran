@@ -67,7 +67,7 @@ export default function PenawaranPage() {
         </div>
         <div>
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Sisa Waktu</p>
-          <p className="text-sm font-bold text-[#EC1E25] mt-1">3 Hari Tersisa</p>
+          <p className="text-sm font-bold text-secondary mt-1">3 Hari Tersisa</p>
         </div>
         <div>
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Status Penawaran</p>

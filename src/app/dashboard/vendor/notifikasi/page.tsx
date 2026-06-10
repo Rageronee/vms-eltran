@@ -81,7 +81,7 @@ export default function VendorNotificationsPage() {
         )}
       </div>
 
-      <div className="bg-white rounded-[2rem] border border-border/40 shadow-sm p-6 md:p-10 relative overflow-hidden">
+      <div className="bg-white rounded-4xl border border-border/40 shadow-sm p-6 md:p-10 relative overflow-hidden">
         {/* Decorative corner bg */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/2" />
         

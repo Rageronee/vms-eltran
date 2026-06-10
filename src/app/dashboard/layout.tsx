@@ -94,7 +94,7 @@ export default function DashboardLayout({
 
         {/* Sidebar - fully responsive */}
         <aside className={cn(
-          "w-64 bg-primary text-white/80 flex-shrink-0 flex flex-col z-50 transition-transform duration-300 ease-in-out border-r border-primary-hover shadow-lg",
+          "w-64 bg-primary text-white/80 shrink-0 flex flex-col z-50 transition-transform duration-300 ease-in-out border-r border-primary-hover shadow-lg",
           "fixed inset-y-0 left-0 md:relative md:translate-x-0",
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}>
@@ -212,8 +212,8 @@ export default function DashboardLayout({
                   <span className="absolute top-1 right-1 size-2 bg-secondary rounded-full border border-white" />
                 </button>
 
-                {isNotifOpen && (
-                  <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-80 rounded-2xl border border-border bg-white shadow-elegant animate-in fade-in duration-200">
+                 {isNotifOpen && (
+                  <div className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 top-20 sm:top-[calc(100%+8px)] z-50 w-auto sm:w-80 rounded-2xl border border-border bg-white shadow-elegant animate-in fade-in duration-200">
                     <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                       <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Notifikasi Sistem</span>
                       <span className="text-[10px] bg-secondary/10 text-secondary font-bold px-2 py-0.5 rounded-full">
@@ -249,6 +249,15 @@ export default function DashboardLayout({
                         </>
                       )}
                     </div>
+                    <div className="p-3 border-t border-slate-100 text-center">
+                      <Link
+                        href={isAdmin ? "/dashboard/admin" : "/dashboard/vendor/notifikasi"}
+                        onClick={() => setIsNotifOpen(false)}
+                        className="inline-flex items-center justify-center w-full py-2.5 bg-slate-50 hover:bg-primary/5 text-primary text-xs font-bold rounded-xl transition-all cursor-pointer"
+                      >
+                        Cek Seluruh Notifikasi
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
@@ -270,8 +279,8 @@ export default function DashboardLayout({
                   <span className="absolute top-1 right-1 size-2 bg-slate-800 rounded-full border border-white" />
                 </button>
 
-                {isMsgOpen && (
-                  <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-80 rounded-2xl border border-border bg-white shadow-elegant animate-in fade-in duration-200">
+                 {isMsgOpen && (
+                  <div className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 top-20 sm:top-[calc(100%+8px)] z-50 w-auto sm:w-80 rounded-2xl border border-border bg-white shadow-elegant animate-in fade-in duration-200">
                     <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                       <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Pesan Masuk</span>
                     </div>
@@ -316,7 +325,7 @@ export default function DashboardLayout({
                   <div className="size-9 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-sm uppercase">
                     {isAdmin ? "AD" : "VN"}
                   </div>
-                  <div className="flex flex-col text-left hidden md:flex">
+                  <div className="hidden flex-col text-left md:flex">
                     <span className="text-xs font-bold text-slate-800 leading-tight">
                       {isAdmin ? "Administrator" : "PT Sinar Tower Nusantara"}
                     </span>

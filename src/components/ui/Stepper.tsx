@@ -8,28 +8,29 @@ interface StepperProps {
 const steps = [
   "BASIC INFORMATION",
   "COMPANY PROFILE",
-  "DOCUMENT",
-  "SUPPORTING DOCUMENTS",
+  "DOCUMENT VAULT",
+  "PRODUCT & CATALOG",
+  "SUPPORTING DOCS",
 ];
 
 export function Stepper({ current, onJump }: StepperProps) {
   return (
     <div className="w-full">
       <nav aria-label="Progress">
-        <ol role="list" className="grid grid-cols-2 lg:grid-cols-4 gap-4 justify-items-center">
+        <ol role="list" className="grid grid-cols-2 lg:grid-cols-5 gap-3 justify-items-center">
           {steps.map((label, idx) => {
             const stepNum = idx + 1;
             const isActive = stepNum === current;
             const isCompleted = stepNum < current;
             
             return (
-              <li key={label} className="w-full max-w-[240px]">
+              <li key={label} className="w-full max-w-[200px]">
                 <button
                   type="button"
                   onClick={() => onJump && onJump(stepNum)}
                   disabled={!onJump}
                   className={cn(
-                    "group flex items-center gap-2.5 rounded-full px-4 py-2.5 w-full transition-all duration-300 cursor-pointer shadow-sm border text-left",
+                    "group flex items-center gap-2 rounded-full px-3 py-2 w-full transition-all duration-300 cursor-pointer shadow-sm border text-left",
                     isActive 
                       ? "bg-primary text-white border-primary shadow-md shadow-primary/20 scale-[1.02]" 
                       : isCompleted 
@@ -39,7 +40,7 @@ export function Stepper({ current, onJump }: StepperProps) {
                   )}
                 >
                   <span className={cn(
-                    "flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-colors",
+                    "flex size-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold transition-colors",
                     isActive 
                       ? "bg-white text-primary" 
                       : isCompleted 
@@ -48,7 +49,7 @@ export function Stepper({ current, onJump }: StepperProps) {
                   )}>
                     {isCompleted ? "✓" : stepNum}
                   </span>
-                  <span className="text-[10px] font-bold tracking-wider uppercase whitespace-nowrap overflow-hidden text-ellipsis w-full">
+                  <span className="text-[9px] font-bold tracking-wider uppercase whitespace-nowrap overflow-hidden text-ellipsis w-full">
                     {label}
                   </span>
                 </button>

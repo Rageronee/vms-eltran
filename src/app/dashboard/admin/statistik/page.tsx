@@ -110,7 +110,7 @@ export default function StatistikPortalPage() {
           </div>
 
           {/* SVG Bar Chart */}
-          <div className="relative w-full aspect-[2/1] min-h-[220px]">
+          <div className="relative w-full aspect-2/1 min-h-[220px]">
             <svg className="w-full h-full" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
               {/* Grid lines */}
               <line x1="30" y1="20" x2="480" y2="20" stroke="#f1f5f9" strokeWidth="1" />
@@ -137,7 +137,7 @@ export default function StatistikPortalPage() {
                       height={height}
                       rx="6"
                       fill="#195192"
-                      className="transition-all hover:fill-[#EC1E25] duration-300"
+                      className="transition-all hover:fill-secondary duration-300"
                     />
                     {/* Count label above the bar */}
                     <text

@@ -55,7 +55,7 @@ export function AdminReviewModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 px-4">
+    <div className="fixed inset-0 z-1000 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 px-4">
       <div className="relative max-w-4xl w-full bg-white rounded-3xl shadow-2xl p-6 md:p-8 animate-in zoom-in-95 duration-300 flex flex-col border border-border max-h-[92vh]">
         
         {/* Header */}
@@ -155,7 +155,7 @@ export function AdminReviewModal({
               {/* Decision Choice */}
               <div>
                 <span className="text-[11px] font-black text-primary uppercase tracking-widest border-l-2 border-secondary pl-2 mb-3 block">
-                  Keputusan Verifikasi <span className="text-[#EC1E25]">*</span>
+                  Keputusan Verifikasi <span className="text-secondary">*</span>
                 </span>
                 <div className="grid grid-cols-2 gap-4">
                   <button
@@ -196,7 +196,7 @@ export function AdminReviewModal({
               {/* Decision Reason */}
               <div className="space-y-2">
                 <label className="text-[11px] font-black text-primary uppercase tracking-widest border-l-2 border-secondary pl-2 block">
-                  Alasan Keputusan <span className="text-[#EC1E25]">*</span>
+                  Alasan Keputusan <span className="text-secondary">*</span>
                 </label>
                 <textarea
                   rows={4}

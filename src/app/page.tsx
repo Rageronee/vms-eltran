@@ -70,7 +70,7 @@ export default function Home() {
             priority
           />
           {/* Elegant dark gradient overlay with subtle noise */}
-          <div className="absolute inset-0 bg-primary/65 bg-gradient-to-tr from-primary/95 via-primary/75 to-transparent backdrop-blur-[1px]" />
+          <div className="absolute inset-0 bg-primary/65 bg-linear-to-tr from-primary/95 via-primary/75 to-transparent backdrop-blur-[1px]" />
 
           {/* Tech grid layout overlay */}
           <div className="absolute inset-0 bg-radar-pattern opacity-10 pointer-events-none" />
@@ -78,7 +78,7 @@ export default function Home() {
           <div className="relative z-10 max-w-4xl flex flex-col items-center animate-in fade-in slide-in-from-bottom-6 duration-700">
             <h1 className="text-4xl font-extrabold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-balance">
               Register Your Vendor,<br />
-              <span className="underline decoration-[#EC1E25] decoration-8 underline-offset-8">
+              <span className="underline decoration-secondary decoration-8 underline-offset-8">
                 Easily Online.
               </span>
             </h1>
@@ -102,7 +102,7 @@ export default function Home() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="group border-white/30 text-white backdrop-blur-md hover:bg-[#EC1E25] hover:text-white transition-all duration-300 pr-8 cursor-pointer"
+                className="group border-white/30 text-white backdrop-blur-md hover:bg-secondary hover:text-white transition-all duration-300 pr-8 cursor-pointer"
               >
                 <a href="#features" className="inline-flex items-center gap-2">
                   Learn More
@@ -225,7 +225,7 @@ export default function Home() {
 
         {/* CTA */}
         <section className="w-full mt-32">
-          <div className="relative overflow-hidden bg-gradient-to-r from-primary to-primary-hover py-16 md:py-20 px-6 lg:px-20 shadow-elegant flex flex-col md:flex-row items-center justify-between gap-12 text-center md:text-left">
+          <div className="relative overflow-hidden bg-linear-to-r from-primary to-primary-hover py-16 md:py-20 px-6 lg:px-20 shadow-elegant flex flex-col md:flex-row items-center justify-between gap-12 text-center md:text-left">
             <div className="absolute inset-0 bg-[url('/bg.avif')] opacity-10 object-cover mix-blend-overlay pointer-events-none" />
             <div className="relative z-10 max-w-2xl flex flex-col items-center md:items-start">
               <div className="mb-6 p-2 rounded-full w-fit">

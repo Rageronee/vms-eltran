@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { Home, Calendar, ShieldCheck, FileText, CheckCircle, Clock, UserCircle } from "lucide-react";
+import { Home, Calendar, ShieldCheck, FileText, CheckCircle, Clock, UserCircle, TrendingUp, FileSignature } from "lucide-react";
+import Link from "next/link";
 import { ProjectDetailModal } from "@/components/ui/ProjectDetailModal";
 import { VendorRecheckModal } from "@/components/ui/VendorRecheckModal";
+import { DataHistoryModal } from "@/components/ui/DataHistoryModal";
 import { useToast } from "@/components/ui/Toast";
 
 export default function VendorDashboard() {
@@ -11,6 +13,7 @@ export default function VendorDashboard() {
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isRecheckOpen, setIsRecheckOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const handleProjectDetail = (project: any) => {
     setSelectedProject(project);
     setIsDetailOpen(true);
@@ -70,6 +73,12 @@ export default function VendorDashboard() {
         </div>
         <div className="flex flex-wrap items-center gap-3 shrink-0">
           <button
+            onClick={() => setIsHistoryOpen(true)}
+            className="inline-flex items-center gap-1 bg-amber-100 hover:bg-amber-200 border border-amber-200 px-3.5 py-1.5 rounded-xl text-xs font-bold text-amber-800 cursor-pointer transition-colors"
+          >
+            Riwayat Perubahan
+          </button>
+          <button
             onClick={() => setIsRecheckOpen(true)}
             className="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 border border-border/80 px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 cursor-pointer transition-colors"
           >
@@ -83,7 +92,15 @@ export default function VendorDashboard() {
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Profile Summary Card */}
-        <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col justify-between">
+        <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-8">
+            <Link 
+              href="/dashboard/vendor/profil" 
+              className="inline-flex items-center gap-2 bg-primary/10 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300"
+            >
+              <UserCircle className="size-4" /> Kelola Profil
+            </Link>
+          </div>
           <div>
             <h2 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
               <UserCircle className="size-5 text-primary" /> Profil Perusahaan
@@ -118,127 +135,252 @@ export default function VendorDashboard() {
           </div>
         </div>
 
-        {/* Circular Project Progress Metric Card */}
-        <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col items-center justify-between text-center">
-          <div className="w-full text-left">
-            <h2 className="text-lg font-bold text-primary mb-6">Progress Proyek Aktif</h2>
-          </div>
-          
-          <div className="relative flex items-center justify-center size-44 my-4">
-            <svg className="size-full -rotate-90" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="18" cy="18" r="16" fill="none" className="stroke-slate-100" strokeWidth="3.5" />
-              <circle cx="18" cy="18" r="16" fill="none" className="stroke-primary" strokeWidth="3.5" strokeDasharray="100" strokeDashoffset="25" strokeLinecap="round" />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-4xl font-black text-slate-800 tracking-tight">75%</span>
-              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider mt-1">Selesai</span>
+        {/* Detailed Progress Card */}
+        <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col justify-between relative overflow-hidden">
+          <div className="relative z-10 w-full text-left mb-6 flex justify-between items-start">
+            <div>
+              <h2 className="text-lg font-bold text-slate-800">Ringkasan Kinerja</h2>
+              <p className="text-xs text-muted-foreground mt-1">Performa proyek & tagihan</p>
+            </div>
+            <div className="p-2 bg-slate-50 border border-border/50 rounded-xl text-primary">
+              <TrendingUp className="size-5" />
             </div>
           </div>
           
-          <div className="w-full space-y-3 mt-6 border-t border-slate-100 pt-4 text-xs font-semibold text-slate-600">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="size-2.5 rounded-full bg-primary" />
-                <span>Pekerjaan Rampung</span>
+          <div className="relative z-10 space-y-6">
+            <div>
+              <div className="flex justify-between items-end mb-2">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Proyek Selesai</span>
+                <span className="text-2xl font-black text-slate-800">12</span>
               </div>
-              <span className="font-bold text-slate-800">75%</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="size-2.5 rounded-full bg-slate-200" />
-                <span>Sedang Berjalan</span>
+              <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                <div className="bg-primary h-full rounded-full w-full" />
               </div>
-              <span className="font-bold text-slate-800">25%</span>
             </div>
+
+            <div>
+              <div className="flex justify-between items-end mb-2">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Proyek Berjalan</span>
+                <span className="text-2xl font-black text-slate-800">2</span>
+              </div>
+              <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                <div className="bg-slate-400 h-full rounded-full w-[40%]" />
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-border/50">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Total Tagihan Terbayar</span>
+              <span className="text-xl font-bold text-slate-800 font-mono">Rp 4.250.000.000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tasks and Activities Section */}
+      <div className="grid gap-8 lg:grid-cols-2">
+        {/* Pending Tasks (Notifications) */}
+        <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col h-full">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-bold text-slate-800">Tugas Tertunda</h2>
+            <span className="inline-flex bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-border/50">
+              2 Aksi
+            </span>
+          </div>
+          
+          <div className="space-y-4 flex-1">
+            <div className="flex flex-col gap-3 p-5 bg-white rounded-2xl border-l-4 border-l-rose-500 border border-border/60 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-slate-50 text-rose-500 rounded-lg border border-border/50 shrink-0">
+                  <FileText className="size-5" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-sm font-bold text-slate-800">Unggah SPH Proyek Fiber Optic</h4>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">SPH untuk proyek Jakarta-Bandung ditunggu. Tenggat waktu tersisa 3 hari.</p>
+                </div>
+              </div>
+              <div className="flex justify-end mt-2">
+                <button className="text-xs font-bold border border-rose-200 text-rose-600 hover:bg-rose-50 px-5 py-2 rounded-xl transition-colors cursor-pointer">
+                  Unggah SPH
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 p-5 bg-white rounded-2xl border-l-4 border-l-amber-500 border border-border/60 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-slate-50 text-amber-500 rounded-lg border border-border/50 shrink-0">
+                  <ShieldCheck className="size-5" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-sm font-bold text-slate-800">Pembaruan SBU</h4>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">Sertifikat Badan Usaha akan kedaluwarsa bulan depan. Mohon segera perbarui.</p>
+                </div>
+              </div>
+              <div className="flex justify-end mt-2">
+                <button className="text-xs font-bold border border-amber-200 text-amber-600 hover:bg-amber-50 px-5 py-2 rounded-xl transition-colors cursor-pointer">
+                  Perbarui Dokumen
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Activities */}
+        <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col h-full">
+          <h2 className="text-lg font-bold text-slate-800 mb-6">Aktivitas Terkini</h2>
+          
+          <div className="relative pl-4 border-l-2 border-slate-100 space-y-6 flex-1 py-2">
+            
+            <div className="relative">
+              <div className="absolute -left-[23px] top-1 size-3 bg-emerald-500 rounded-full ring-4 ring-white" />
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-bold text-slate-800">Invoice #INV-2026-042 Terbayar</span>
+                <span className="text-xs text-slate-500">Pembayaran termin ke-2 proyek Fiber Optic telah ditransfer.</span>
+                <span className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Kemarin, 14:30 WIB</span>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="absolute -left-[23px] top-1 size-3 bg-primary rounded-full ring-4 ring-white" />
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-bold text-slate-800">Persetujuan Dokumen NIB</span>
+                <span className="text-xs text-slate-500">Admin Procurement menyetujui dokumen NIB terbaru Anda.</span>
+                <span className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">08 Juni 2026, 09:15 WIB</span>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="absolute -left-[23px] top-1 size-3 bg-blue-500 rounded-full ring-4 ring-white" />
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-bold text-slate-800">Penugasan Proyek Baru</span>
+                <span className="text-xs text-slate-500">Anda ditugaskan pada proyek &quot;Maintenance Menara BTS Jawa Barat&quot;.</span>
+                <span className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">05 Juni 2026, 11:00 WIB</span>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
 
       {/* Current Project Table Section */}
       <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-primary">Proyek Kemitraan Sedang Berjalan</h2>
-          <span className="inline-flex bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold border border-primary/20">
-            2 Proyek Aktif
+        <div className="flex items-center justify-between mb-6 border-b border-border/50 pb-4">
+          <h2 className="text-lg font-bold text-slate-800">Proyek Kemitraan Sedang Berjalan</h2>
+          <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs font-bold border border-primary/20">
+            <TrendingUp className="size-3.5" /> 2 Proyek Aktif
           </span>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[700px]">
+        <div className="overflow-x-auto pb-4">
+          <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
-              <tr className="border-b border-border/60 text-slate-500 text-xs uppercase tracking-wider">
-                <th className="pb-4 font-bold w-2/5">Nama Pekerjaan</th>
-                <th className="pb-4 font-bold w-1/3">Kemajuan Fisik</th>
-                <th className="pb-4 font-bold w-1/6">Status Proyek</th>
-                <th className="pb-4 font-bold w-1/12 text-center">Aksi</th>
+              <tr className="bg-slate-50/50 text-slate-500 text-xs uppercase tracking-wider">
+                <th className="p-4 font-bold rounded-l-xl">Info Proyek</th>
+                <th className="p-4 font-bold w-1/4">Tenggat Waktu</th>
+                <th className="p-4 font-bold w-1/4">Kemajuan & Status</th>
+                <th className="p-4 font-bold text-center rounded-r-xl">Aksi Cepat</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/40 text-sm">
               <tr className="group hover:bg-slate-50/50 transition-colors">
-                <td className="py-5 pr-4">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-semibold text-slate-800">Pemasangan Infrastruktur Fiber Optic Jakarta - Bandung</span>
-                    <span className="text-xs text-muted-foreground">No. Kontrak: ELT-FO-2025-089</span>
+                <td className="p-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-bold text-slate-800 line-clamp-1">Pemasangan Infrastruktur Fiber Optic Jakarta - Bandung</span>
+                    <span className="text-xs text-primary font-mono bg-primary/5 inline-flex w-fit px-2 py-0.5 rounded border border-primary/10">ELT-FO-2025-089</span>
                   </div>
                 </td>
-                <td className="py-5 pr-8">
-                  <div className="flex items-center gap-3">
-                    <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-border/20">
-                      <div className="bg-primary h-full rounded-full transition-all duration-500" style={{ width: '75%' }} />
+                <td className="p-4">
+                  <div className="flex flex-col gap-1 text-slate-600">
+                    <span className="text-sm font-semibold flex items-center gap-1.5"><Calendar className="size-4 text-slate-400" /> 15 Ags 2026</span>
+                    <span className="text-[10px] uppercase font-bold text-amber-600 tracking-wider">2 Bulan Lagi</span>
+                  </div>
+                </td>
+                <td className="p-4 pr-8">
+                  <div className="flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between text-xs font-black text-slate-700">
+                      <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
+                        <CheckCircle className="size-3" /> Berjalan Lancar
+                      </span>
+                      <span>75%</span>
                     </div>
-                    <span className="text-xs font-black text-slate-700">75%</span>
+                    <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-border/20">
+                      <div className="bg-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: '75%' }} />
+                    </div>
                   </div>
                 </td>
-                <td className="py-5">
-                  <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-xs font-semibold">
-                    <CheckCircle className="size-3" /> Berjalan Lancar
-                  </span>
-                </td>
-                <td className="py-5 text-center">
-                  <button
-                    onClick={() => handleProjectDetail({
-                      name: "Pemasangan Infrastruktur Fiber Optic Jakarta - Bandung",
-                      contractNo: "ELT-FO-2025-089",
-                      progress: 75,
-                      status: "Berjalan Lancar"
-                    })}
-                    className="text-primary hover:text-primary-hover font-bold text-xs transition-colors hover:underline cursor-pointer"
-                  >
-                    Detail
-                  </button>
+                <td className="p-4">
+                  <div className="flex items-center justify-center gap-2">
+                    <button 
+                      onClick={() => handleProjectDetail({
+                        name: "Pemasangan Infrastruktur Fiber Optic Jakarta - Bandung",
+                        contractNo: "ELT-FO-2025-089",
+                        progress: 75,
+                        status: "Berjalan Lancar"
+                      })}
+                      className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors tooltip-trigger relative group/btn"
+                    >
+                      <FileText className="size-4" />
+                      <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Detail</span>
+                    </button>
+                    <button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors tooltip-trigger relative group/btn">
+                      <TrendingUp className="size-4" />
+                      <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Upload Laporan</span>
+                    </button>
+                    <button className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors tooltip-trigger relative group/btn">
+                      <FileSignature className="size-4" />
+                      <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Kirim Invoice</span>
+                    </button>
+                  </div>
                 </td>
               </tr>
+
               <tr className="group hover:bg-slate-50/50 transition-colors">
-                <td className="py-5 pr-4">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-semibold text-slate-800">Instalasi BTS Tower West Java Area - Phase II</span>
-                    <span className="text-xs text-muted-foreground">No. Kontrak: ELT-BTS-2025-112</span>
+                <td className="p-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-bold text-slate-800 line-clamp-1">Maintenance Menara BTS Jawa Barat</span>
+                    <span className="text-xs text-primary font-mono bg-primary/5 inline-flex w-fit px-2 py-0.5 rounded border border-primary/10">ELT-MT-2026-012</span>
                   </div>
                 </td>
-                <td className="py-5 pr-8">
-                  <div className="flex items-center gap-3">
-                    <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-border/20">
-                      <div className="bg-[#EC1E25] h-full rounded-full transition-all duration-500" style={{ width: '40%' }} />
+                <td className="p-4">
+                  <div className="flex flex-col gap-1 text-slate-600">
+                    <span className="text-sm font-semibold flex items-center gap-1.5"><Calendar className="size-4 text-slate-400" /> 30 Nov 2026</span>
+                    <span className="text-[10px] uppercase font-bold text-emerald-600 tracking-wider">Aman</span>
+                  </div>
+                </td>
+                <td className="p-4 pr-8">
+                  <div className="flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between text-xs font-black text-slate-700">
+                      <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
+                        <Clock className="size-3" /> Persiapan
+                      </span>
+                      <span>15%</span>
                     </div>
-                    <span className="text-xs font-black text-slate-700">40%</span>
+                    <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-border/20">
+                      <div className="bg-blue-500 h-full rounded-full transition-all duration-500" style={{ width: '15%' }} />
+                    </div>
                   </div>
                 </td>
-                <td className="py-5">
-                  <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded-full text-xs font-semibold">
-                    <Clock className="size-3" /> Peninjauan Jadwal
-                  </span>
-                </td>
-                <td className="py-5 text-center">
-                  <button
-                    onClick={() => handleProjectDetail({
-                      name: "Instalasi BTS Tower West Java Area - Phase II",
-                      contractNo: "ELT-BTS-2025-112",
-                      progress: 40,
-                      status: "Peninjauan Jadwal"
-                    })}
-                    className="text-primary hover:text-primary-hover font-bold text-xs transition-colors hover:underline cursor-pointer"
-                  >
-                    Detail
-                  </button>
+                <td className="p-4">
+                  <div className="flex items-center justify-center gap-2">
+                    <button 
+                      onClick={() => handleProjectDetail({
+                        name: "Maintenance Menara BTS Jawa Barat",
+                        contractNo: "ELT-MT-2026-012",
+                        progress: 15,
+                        status: "Persiapan"
+                      })}
+                      className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors relative group/btn"
+                    >
+                      <FileText className="size-4" />
+                      <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Detail</span>
+                    </button>
+                    <button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors relative group/btn">
+                      <TrendingUp className="size-4" />
+                      <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Upload Laporan</span>
+                    </button>
+                    <button className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors relative group/btn">
+                      <FileSignature className="size-4" />
+                      <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Kirim Invoice</span>
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -258,6 +400,12 @@ export default function VendorDashboard() {
       <VendorRecheckModal
         isOpen={isRecheckOpen}
         onClose={() => setIsRecheckOpen(false)}
+      />
+
+      {/* Data History Modal */}
+      <DataHistoryModal
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
       />
     </div>
   );

@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Stepper } from "@/components/ui/Stepper";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { TableData } from "@/components/ui/TableData";
 import { ChevronLeft, ArrowRight, FileText, AlertTriangle } from "lucide-react";
 
 // Interactive File Upload Input Component
@@ -40,7 +41,7 @@ const FileUploadInput = ({
   return (
     <div className="flex flex-col gap-2">
       <label className="text-sm font-semibold text-foreground">
-        {label} {required && <span className="text-[#EC1E25]">*</span>}
+        {label} {required && <span className="text-secondary">*</span>}
       </label>
       <div className="flex items-center h-12 w-full rounded-xl border border-border/50 bg-surface-dim overflow-hidden transition-all hover:border-primary/50">
         <input
@@ -139,9 +140,12 @@ export default function RegisterPage() {
     otherDocNumber: "",
     otherDocFile: "",
 
-    // Step 4: Supporting Documents & Products
-    selfAssessmentFile: "",
+    // Step 4: Product Catalog & Items
     brochureFile: "",
+    products: [] as { id: string; name: string; type: string; category: string }[],
+
+    // Step 5: Supporting Documents & Agreements
+    selfAssessmentFile: "",
     agreeToStatementLetter: false,
   });
 
@@ -180,7 +184,7 @@ export default function RegisterPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const next = () => setStep((s) => Math.min(4, s + 1));
+  const next = () => setStep((s) => Math.min(5, s + 1));
   const back = () => setStep((s) => Math.max(1, s - 1));
 
   const handleSubmitClick = (e: React.FormEvent) => {
@@ -208,12 +212,12 @@ export default function RegisterPage() {
         {/* Decorative background */}
         <div className="absolute inset-x-0 top-0 -z-10 h-[500px] overflow-hidden pointer-events-none select-none">
           <div className="absolute inset-0 bg-[url('/bg.avif')] object-cover opacity-[0.03]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-background" />
+          <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-transparent to-background" />
         </div>
 
         {/* Spacious Main Container with pt-36 offset for Fixed Header */}
         <main className="flex-1 w-full max-w-[1100px] mx-auto px-6 pt-36 pb-12 lg:px-10">
-          <div className="rounded-[2rem] bg-white p-8 md:p-14 shadow-elegant border border-border/40 backdrop-blur-sm">
+          <div className="rounded-4xl bg-white p-8 md:p-14 shadow-elegant border border-border/40 backdrop-blur-sm">
             <Stepper current={step} onJump={setStep} />
 
             <div className="mt-16 border-t border-border/60 pt-12">
@@ -250,28 +254,24 @@ export default function RegisterPage() {
                     <div className="grid gap-8 md:grid-cols-2">
                       <Input
                         label="Company Type"
-                        required
                         placeholder="e.g. PT, CV, UD"
                         value={formData.companyType}
                         onChange={(e) => handleInputChange("companyType", e.target.value)}
                       />
                       <Input
                         label="Company Name"
-                        required
                         placeholder="e.g. Eltran Indonesia"
                         value={formData.companyName}
                         onChange={(e) => handleInputChange("companyName", e.target.value)}
                       />
                       <Input
                         label="Business Field"
-                        required
                         placeholder="e.g. Telecommunications"
                         value={formData.businessField}
                         onChange={(e) => handleInputChange("businessField", e.target.value)}
                       />
                       <Input
                         label="Sub Business Field"
-                        required
                         placeholder="e.g. Fiber Optic Construction"
                         value={formData.subBusinessField}
                         onChange={(e) => handleInputChange("subBusinessField", e.target.value)}
@@ -279,7 +279,6 @@ export default function RegisterPage() {
                       <div className="md:col-span-2">
                         <Input
                           label="Company Owner / CEO Name"
-                          required
                           placeholder="Full Name"
                           value={formData.ceoName}
                           onChange={(e) => handleInputChange("ceoName", e.target.value)}
@@ -295,28 +294,24 @@ export default function RegisterPage() {
                     <div className="grid gap-8 md:grid-cols-2">
                       <Input
                         label="Country"
-                        required
                         placeholder="e.g. Indonesia"
                         value={formData.country}
                         onChange={(e) => handleInputChange("country", e.target.value)}
                       />
                       <Input
                         label="Province"
-                        required
                         placeholder="e.g. Jawa Barat"
                         value={formData.province}
                         onChange={(e) => handleInputChange("province", e.target.value)}
                       />
                       <Input
                         label="City"
-                        required
                         placeholder="e.g. Bandung"
                         value={formData.city}
                         onChange={(e) => handleInputChange("city", e.target.value)}
                       />
                       <Input
                         label="District"
-                        required
                         placeholder="e.g. Coblong"
                         value={formData.district}
                         onChange={(e) => handleInputChange("district", e.target.value)}
@@ -324,7 +319,6 @@ export default function RegisterPage() {
                       <div className="col-span-full">
                         <Input
                           label="Full Address"
-                          required
                           placeholder="Detailed street address, office suite, block..."
                           value={formData.fullAddress}
                           onChange={(e) => handleInputChange("fullAddress", e.target.value)}
@@ -332,7 +326,6 @@ export default function RegisterPage() {
                       </div>
                       <Input
                         label="Zip Code"
-                        required
                         placeholder="e.g. 40135"
                         value={formData.zipCode}
                         onChange={(e) => handleInputChange("zipCode", e.target.value)}
@@ -344,7 +337,6 @@ export default function RegisterPage() {
                     <div className="grid gap-8 md:grid-cols-2">
                       <Input
                         label="Company Phone Number"
-                        required
                         type="tel"
                         placeholder="+62..."
                         value={formData.phone}
@@ -359,7 +351,6 @@ export default function RegisterPage() {
                       />
                       <Input
                         label="Company Email Address"
-                        required
                         type="email"
                         placeholder="procurement@company.com"
                         value={formData.email}
@@ -375,7 +366,6 @@ export default function RegisterPage() {
                       <div className="col-span-full">
                         <Input
                           label="Our Product / Services Description"
-                          required
                           placeholder="Briefly describe products/services offered"
                           value={formData.description}
                           onChange={(e) => handleInputChange("description", e.target.value)}
@@ -457,27 +447,6 @@ export default function RegisterPage() {
                           placeholder="Deed of Amendment.pdf"
                           fileName={formData.deedAmendmentFile}
                           onFileSelect={(name) => handleInputChange("deedAmendmentFile", name)}
-                        />
-                      </div>
-                      <div className="space-y-6">
-                        <h3 className="font-bold text-primary tracking-wide text-sm uppercase">SK Kemenhumham</h3>
-                        <Input
-                          label="Number"
-                          placeholder="Number"
-                          value={formData.skAmendmentNumber}
-                          onChange={(e) => handleInputChange("skAmendmentNumber", e.target.value)}
-                        />
-                        <Input
-                          label="Date"
-                          type="date"
-                          value={formData.skAmendmentDate}
-                          onChange={(e) => handleInputChange("skAmendmentDate", e.target.value)}
-                        />
-                        <FileUploadInput
-                          label="Attachment"
-                          placeholder="SK Kemenhumhan.pdf"
-                          fileName={formData.skAmendmentFile}
-                          onFileSelect={(name) => handleInputChange("skAmendmentFile", name)}
                         />
                       </div>
                     </div>
@@ -595,8 +564,53 @@ export default function RegisterPage() {
                   </div>
                 )}
 
-                {/* STEP 4: SUPPORTING DOCUMENTS & AGREEMENTS */}
+                {/* STEP 4: PRODUCT CATALOG & ITEMS */}
                 {step === 4 && (
+                  <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    {/* Full Width: Product Brochure / Catalog */}
+                    <div className="flex flex-col gap-6 md:col-span-2">
+                      <div className="space-y-4 border border-border/50 bg-blue-50/40 p-6 rounded-xl flex-1 flex flex-col justify-between">
+                        <div>
+                          <label className="text-sm font-bold text-primary tracking-wide uppercase block mb-2">
+                            Katalog Produk / Brosur
+                          </label>
+                          <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+                            Silakan unggah brosur, katalog, atau daftar barang/jasa yang perusahaan Anda tawarkan. Dokumen ini akan membantu tim kami memahami lini produk Anda secara lebih baik.
+                          </p>
+                        </div>
+                        <div className="max-w-md">
+                          <FileUploadInput
+                            label="Unggah Brosur / Katalog"
+                            placeholder="Brosur_Produk.pdf"
+                            fileName={formData.brochureFile}
+                            onFileSelect={(name) => handleInputChange("brochureFile", name)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Data Barang Table */}
+                    <div className="flex flex-col gap-6">
+                      <div className="space-y-4 border border-border/50 bg-white p-6 rounded-xl flex-1 flex flex-col justify-between">
+                        <div>
+                          <label className="text-sm font-bold text-primary tracking-wide uppercase block mb-2">
+                            Database Barang / Jasa
+                          </label>
+                          <p className="text-xs text-muted-foreground leading-relaxed mb-6">
+                            Tambahkan daftar barang, material, atau jasa yang disediakan oleh perusahaan Anda beserta kategorinya. Data ini akan disimpan di sistem VMS kami.
+                          </p>
+                        </div>
+                        <TableData
+                          items={formData.products}
+                          onChange={(newItems) => handleInputChange("products", newItems)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 5: SUPPORTING DOCUMENTS & AGREEMENTS */}
+                {step === 5 && (
                   <div className="grid gap-8 md:grid-cols-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {/* Left Side: Statement Letter text modal based flow */}
                     <div className="flex flex-col gap-6">
@@ -658,32 +672,9 @@ export default function RegisterPage() {
 
                           <FileUploadInput
                             label="Unggah Dokumen Self-Assessment"
-                            required
                             placeholder="Self Assessment Form.pdf"
                             fileName={formData.selfAssessmentFile}
                             onFileSelect={(name) => handleInputChange("selfAssessmentFile", name)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Full Width: Product Brochure / Catalog */}
-                    <div className="flex flex-col gap-6 md:col-span-2">
-                      <div className="space-y-4 border border-border/50 bg-blue-50/40 p-6 rounded-xl flex-1 flex flex-col justify-between">
-                        <div>
-                          <label className="text-sm font-bold text-primary tracking-wide uppercase block mb-2">
-                            Katalog Produk / Brosur
-                          </label>
-                          <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-                            Silakan unggah brosur, katalog, atau daftar barang/jasa yang perusahaan Anda tawarkan. Dokumen ini akan membantu tim kami memahami lini produk Anda secara lebih baik.
-                          </p>
-                        </div>
-                        <div className="max-w-md">
-                          <FileUploadInput
-                            label="Unggah Brosur / Katalog"
-                            placeholder="Brosur_Produk.pdf"
-                            fileName={formData.brochureFile}
-                            onFileSelect={(name) => handleInputChange("brochureFile", name)}
                           />
                         </div>
                       </div>
@@ -720,7 +711,7 @@ export default function RegisterPage() {
                     </Button>
                   )}
 
-                  {step < 4 ? (
+                  {step < 5 ? (
                     <Button
                       type="button"
                       onClick={next}
@@ -749,7 +740,7 @@ export default function RegisterPage() {
 
       {/* MODAL 1: STATEMENT LETTER AGREEMENT */}
       {isStatementOpen && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 px-4">
+        <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 px-4">
           <div className="relative max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8 md:p-10 animate-in zoom-in-95 duration-500 max-h-[85vh] flex flex-col">
             <h3 className="text-xl font-bold text-primary border-b border-border pb-4 uppercase tracking-wider">
               Statement Letter Agreement
@@ -812,7 +803,7 @@ export default function RegisterPage() {
 
       {/* MODAL 2: PRATINJAU DATA REGISTRASI (PREVIEW MODAL) */}
       {isPreviewOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 px-4">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 px-4">
           <div className="relative max-w-3xl w-full bg-white rounded-3xl shadow-2xl p-8 md:p-10 animate-in zoom-in-95 duration-500 max-h-[90vh] flex flex-col">
             <h3 className="text-xl font-bold text-primary border-b border-border pb-4 uppercase tracking-wider">
               Pratinjau Data Registrasi Vendor
@@ -825,10 +816,10 @@ export default function RegisterPage() {
 
               {/* Basic Information */}
               <div>
-                <h4 className="text-xs font-bold text-primary uppercase tracking-widest border-l-2 border-[#EC1E25] pl-2 mb-3">
+                <h4 className="text-xs font-bold text-primary uppercase tracking-widest border-l-2 border-secondary pl-2 mb-3">
                   Informasi Dasar (Step 1)
                 </h4>
-                <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
                   <div><span className="font-semibold text-slate-500 block">Tipe Wilayah:</span> <span className="text-slate-800 font-medium">{formData.region}</span></div>
                   <div><span className="font-semibold text-slate-500 block">Bentuk Badan Usaha:</span> <span className="text-slate-800 font-medium">{formData.companyType || "-"}</span></div>
                   <div><span className="font-semibold text-slate-500 block">Nama Perusahaan:</span> <span className="text-slate-800 font-medium">{formData.companyName || "-"}</span></div>
@@ -840,29 +831,29 @@ export default function RegisterPage() {
 
               {/* Company Profile */}
               <div>
-                <h4 className="text-xs font-bold text-primary uppercase tracking-widest border-l-2 border-[#EC1E25] pl-2 mb-3">
+                <h4 className="text-xs font-bold text-primary uppercase tracking-widest border-l-2 border-secondary pl-2 mb-3">
                   Profil Perusahaan (Step 2)
                 </h4>
-                <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
                   <div><span className="font-semibold text-slate-500 block">Negara:</span> <span className="text-slate-800 font-medium">{formData.country}</span></div>
                   <div><span className="font-semibold text-slate-500 block">Provinsi:</span> <span className="text-slate-800 font-medium">{formData.province || "-"}</span></div>
                   <div><span className="font-semibold text-slate-500 block">Kota:</span> <span className="text-slate-800 font-medium">{formData.city || "-"}</span></div>
                   <div><span className="font-semibold text-slate-500 block">Kecamatan:</span> <span className="text-slate-800 font-medium">{formData.district || "-"}</span></div>
-                  <div className="col-span-2"><span className="font-semibold text-slate-500 block">Alamat Lengkap:</span> <span className="text-slate-800 font-medium">{formData.fullAddress || "-"}</span></div>
+                  <div className="col-span-1 md:col-span-2"><span className="font-semibold text-slate-500 block">Alamat Lengkap:</span> <span className="text-slate-800 font-medium">{formData.fullAddress || "-"}</span></div>
                   <div><span className="font-semibold text-slate-500 block">Kode Pos:</span> <span className="text-slate-800 font-medium">{formData.zipCode || "-"}</span></div>
                   <div><span className="font-semibold text-slate-500 block">Telepon Kantor:</span> <span className="text-slate-800 font-medium">{formData.phone || "-"}</span></div>
                   <div><span className="font-semibold text-slate-500 block">Email Kantor:</span> <span className="text-slate-800 font-medium">{formData.email || "-"}</span></div>
                   <div><span className="font-semibold text-slate-500 block">Website:</span> <span className="text-slate-800 font-medium">{formData.website || "-"}</span></div>
-                  <div className="col-span-2"><span className="font-semibold text-slate-500 block">Deskripsi Produk/Jasa:</span> <span className="text-slate-800 font-medium">{formData.description || "-"}</span></div>
+                  <div className="col-span-1 md:col-span-2"><span className="font-semibold text-slate-500 block">Deskripsi Produk/Jasa:</span> <span className="text-slate-800 font-medium">{formData.description || "-"}</span></div>
                 </div>
               </div>
 
               {/* Legal Documents */}
               <div>
-                <h4 className="text-xs font-bold text-primary uppercase tracking-widest border-l-2 border-[#EC1E25] pl-2 mb-3">
+                <h4 className="text-xs font-bold text-primary uppercase tracking-widest border-l-2 border-secondary pl-2 mb-3">
                   Dokumen Legalitas & Perizinan (Step 3)
                 </h4>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
                   <div>
                     <span className="font-semibold text-slate-500 block">Akte Pendirian:</span>
                     <span className="text-slate-800 font-medium">{formData.deedNumber || "-"} ({formData.deedDate || "-"})</span>
@@ -886,12 +877,29 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Step 4 Agreements */}
+              {/* Step 4 Product Catalog */}
               <div>
-                <h4 className="text-xs font-bold text-primary uppercase tracking-widest border-l-2 border-[#EC1E25] pl-2 mb-3">
-                  Dokumen Pendukung & Pakta Integritas (Step 4)
+                <h4 className="text-xs font-bold text-primary uppercase tracking-widest border-l-2 border-secondary pl-2 mb-3">
+                  Katalog Produk & Data Barang (Step 4)
                 </h4>
-                <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
+                  <div>
+                    <span className="font-semibold text-slate-500 block">Brosur / Katalog Produk:</span>
+                    <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">{formData.brochureFile ? `✓ ${formData.brochureFile}` : "✘ Belum diunggah"}</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-slate-500 block">Total Data Barang/Jasa:</span>
+                    <span className="text-slate-800 font-bold">{formData.products.length} Items</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 5 Agreements */}
+              <div>
+                <h4 className="text-xs font-bold text-primary uppercase tracking-widest border-l-2 border-secondary pl-2 mb-3">
+                  Dokumen Pendukung & Pakta Integritas (Step 5)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
                   <div>
                     <span className="font-semibold text-slate-500 block">Statement Letter Agreement:</span>
                     <span className="text-emerald-600 font-bold">✓ Disetujui (Pakta Integritas)</span>
@@ -941,7 +949,7 @@ export default function RegisterPage() {
 
       {/* MODAL 3: SUCCESS CONFIRMATION MODAL */}
       {isSuccessOpen && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 px-4">
+        <div className="fixed inset-0 z-120 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 px-4">
           <div className="relative max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 md:p-10 animate-in zoom-in-95 duration-500 text-center flex flex-col items-center">
             <div className="size-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6">
               <svg className="size-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
