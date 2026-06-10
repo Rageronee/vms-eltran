@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { LayoutGrid, Download, Plus, Printer, ShieldCheck, Clock, RefreshCw, AlertOctagon, Eye } from "lucide-react";
+import { LayoutGrid, Download, Plus, Printer, ShieldCheck, Clock, RefreshCw, AlertOctagon, Eye, History } from "lucide-react";
 import { Select } from "@/components/ui/Select";
 import { useToast } from "@/components/ui/Toast";
 import { VendorDetailModal } from "@/components/ui/VendorDetailModal";
+import { DataHistoryModal } from "@/components/ui/DataHistoryModal";
+import { DashboardPageWrapper, DashboardHeader, DashboardCard, DashboardCardHeader } from "@/components/layout/DashboardWrappers";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -13,6 +15,7 @@ export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVendor, setSelectedVendor] = useState<any>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const vendors = [
     {
@@ -80,28 +83,26 @@ export default function AdminDashboard() {
     toast(`Akun Mitra "${name}" telah diverifikasi sepenuhnya!`, "success");
   };
 
-  // Filter vendors based on search query
-  const filteredVendors = vendors.filter((v) =>
-    v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    v.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    v.pic.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter vendors based on search query (memoized to prevent re-filtering on other state changes)
+  const filteredVendors = React.useMemo(() => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return vendors;
+    return vendors.filter((v) =>
+      v.name.toLowerCase().includes(query) ||
+      v.category.toLowerCase().includes(query) ||
+      v.pic.toLowerCase().includes(query)
+    );
+  }, [searchQuery]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 px-4 sm:px-0">
+    <DashboardPageWrapper>
       
       {/* Top Header Section */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
-            <LayoutGrid className="size-7" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Manajemen Database Vendor</h1>
-            <p className="text-sm text-muted-foreground">Kelola, verifikasi, dan pantau kelengkapan berkas legalitas dari calon mitra bisnis.</p>
-          </div>
-        </div>
-        
+      <DashboardHeader
+        icon={<LayoutGrid className="size-7" />}
+        title="Manajemen Database Vendor"
+        description="Kelola, verifikasi, dan pantau kelengkapan berkas legalitas dari calon mitra bisnis."
+      >
         {/* Quick Stats Badges */}
         <div className="flex flex-wrap gap-3 text-xs font-bold text-slate-600 bg-white p-3 rounded-2xl border border-border/50 shadow-sm shrink-0">
           <span className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg border border-emerald-100">
@@ -114,10 +115,17 @@ export default function AdminDashboard() {
             1 Ditolak
           </span>
         </div>
-      </div>
+        {/* Riwayat Perubahan (Admin Only) */}
+        <button
+          onClick={() => setIsHistoryOpen(true)}
+          className="inline-flex items-center gap-2 bg-amber-100 hover:bg-amber-200 border border-amber-200 px-4 py-3 rounded-2xl text-xs font-bold text-amber-800 cursor-pointer transition-colors shadow-sm"
+        >
+          <History className="size-4" /> Riwayat Perubahan
+        </button>
+      </DashboardHeader>
 
       {/* Main Table Card */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-border/50 shadow-sm">
+      <DashboardCard>
         
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-[15px] font-bold text-primary uppercase tracking-wider">Dataset Pendaftaran Mitra</h2>
@@ -253,7 +261,7 @@ export default function AdminDashboard() {
             <button className="px-4 py-2 hover:bg-slate-50 transition-colors cursor-pointer">Berikutnya</button>
           </div>
         </div>
-      </div>
+      </DashboardCard>
 
       {/* Vendor Detail Modal */}
       <VendorDetailModal
@@ -262,6 +270,12 @@ export default function AdminDashboard() {
         vendor={selectedVendor}
         onVerify={handleVerifyVendor}
       />
-    </div>
+
+      {/* Data History Modal */}
+      <DataHistoryModal
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+      />
+    </DashboardPageWrapper>
   );
 }

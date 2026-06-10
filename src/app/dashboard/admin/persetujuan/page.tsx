@@ -107,11 +107,22 @@ export default function PersetujuanDokumenPage() {
     }
   };
 
-  // Filtered documents list
-  const filteredDocuments = documents.filter((doc) => {
-    if (statusFilter === "All") return true;
-    return doc.status === statusFilter;
-  });
+  // Filtered documents list (memoized to prevent re-filtering on every state/toast update)
+  const filteredDocuments = React.useMemo(() => {
+    if (statusFilter === "All") return documents;
+    return documents.filter((doc) => doc.status === statusFilter);
+  }, [documents, statusFilter]);
+
+  // Document status counts (memoized)
+  const { pendingCount, verifiedCount } = React.useMemo(() => {
+    let pending = 0;
+    let verified = 0;
+    for (const doc of documents) {
+      if (doc.status === "Pending") pending++;
+      else if (doc.status === "Verified") verified++;
+    }
+    return { pendingCount: pending, verifiedCount: verified };
+  }, [documents]);
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
@@ -131,10 +142,10 @@ export default function PersetujuanDokumenPage() {
         <div className="flex gap-3 text-xs font-bold text-slate-600 bg-white p-3 rounded-2xl border border-border/50 shadow-sm shrink-0">
           <span className="bg-amber-50 text-amber-700 px-3 py-1 rounded-lg border border-amber-100 flex items-center gap-1.5">
             <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
-            {documents.filter((d) => d.status === "Pending").length} Menunggu
+            {pendingCount} Menunggu
           </span>
           <span className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg border border-emerald-100">
-            {documents.filter((d) => d.status === "Verified").length} Disetujui
+            {verifiedCount} Disetujui
           </span>
         </div>
       </div>

@@ -17,7 +17,7 @@ export function Stepper({ current, onJump }: StepperProps) {
   return (
     <div className="w-full">
       <nav aria-label="Progress">
-        <ol role="list" className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:justify-items-center pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 snap-x hide-scrollbar">
+        <ol role="list" className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:justify-items-center pt-2 pb-4 px-4 -mx-4 sm:mx-0 sm:px-2 sm:pt-2 sm:pb-4 snap-x hide-scrollbar">
           {steps.map((label, idx) => {
             const stepNum = idx + 1;
             const isActive = stepNum === current;
@@ -32,7 +32,7 @@ export function Stepper({ current, onJump }: StepperProps) {
                   className={cn(
                     "group flex items-center gap-2 rounded-full px-3 py-2 w-full transition-all duration-300 cursor-pointer shadow-sm border text-left",
                     isActive 
-                      ? "bg-primary text-white border-primary shadow-md shadow-primary/20 scale-[1.02]" 
+                      ? "bg-primary text-white border-primary shadow-md shadow-primary/20" 
                       : isCompleted 
                       ? "bg-primary/10 text-primary hover:bg-primary/20 border-primary/20" 
                       : "bg-surface-muted text-muted-foreground hover:bg-surface-muted/80 border-border/40",

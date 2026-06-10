@@ -4,25 +4,20 @@ import React, { useState } from "react";
 import { ShieldCheck, FileCheck, AlertCircle, Calendar, UploadCloud, FileText, ChevronRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { VendorRecheckModal } from "@/components/ui/VendorRecheckModal";
+import { DashboardPageWrapper, DashboardHeader, DashboardCard, DashboardCardHeader } from "@/components/layout/DashboardWrappers";
 
 export default function LegalitasPage() {
   const [isRecheckOpen, setIsRecheckOpen] = useState(false);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <DashboardPageWrapper>
       
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
-            <FileText className="size-7" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Dokumen Legalitas</h1>
-            <p className="text-sm text-muted-foreground">Kelola dan unggah dokumen legalitas perusahaan Anda.</p>
-          </div>
-        </div>
-        
+      <DashboardHeader
+        icon={<FileText className="size-7" />}
+        title="Dokumen Legalitas"
+        description="Kelola dan unggah dokumen legalitas perusahaan Anda."
+      >
         {/* Vendor Status Badge */}
         <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2.5 rounded-2xl border border-emerald-100 shadow-sm">
           <ShieldCheck className="size-5 text-emerald-600" />
@@ -31,46 +26,41 @@ export default function LegalitasPage() {
             Verified
           </span>
         </div>
-      </div>
+      </DashboardHeader>
 
       {/* Overview Cards */}
       <div className="grid gap-6 md:grid-cols-3">
-        <div className="bg-white p-6 rounded-3xl border border-border/50 shadow-sm flex flex-col justify-center">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 bg-slate-100 text-slate-600 rounded-2xl">
-              <FileText className="size-6" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Documents</p>
-              <h3 className="text-3xl font-black text-slate-800 mt-1">12</h3>
-            </div>
+        <DashboardCard className="!p-6 flex-row items-center gap-4">
+          <div className="p-3 bg-slate-100 text-slate-600 rounded-2xl shrink-0">
+            <FileText className="size-6" />
           </div>
-        </div>
-        <div className="bg-white p-6 rounded-3xl border border-border/50 shadow-sm flex flex-col justify-center">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 bg-emerald-100 text-emerald-600 rounded-2xl">
-              <CheckCircle2 className="size-6" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Verified Documents</p>
-              <h3 className="text-3xl font-black text-slate-800 mt-1">10</h3>
-            </div>
+          <div>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Documents</p>
+            <h3 className="text-3xl font-black text-slate-800 mt-1">12</h3>
           </div>
-        </div>
-        <div className="bg-white p-6 rounded-3xl border border-rose-200 shadow-sm flex flex-col justify-center relative overflow-hidden">
+        </DashboardCard>
+        
+        <DashboardCard className="!p-6 flex-row items-center gap-4">
+          <div className="p-3 bg-emerald-100 text-emerald-600 rounded-2xl shrink-0">
+            <CheckCircle2 className="size-6" />
+          </div>
+          <div>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Verified Documents</p>
+            <h3 className="text-3xl font-black text-slate-800 mt-1">10</h3>
+          </div>
+        </DashboardCard>
+        
+        <DashboardCard className="!p-6 flex-row items-center gap-4 !border-rose-200">
           <div className="absolute right-0 top-0 w-2 h-full bg-rose-500" />
-          <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 bg-rose-100 text-rose-600 rounded-2xl">
-              <AlertCircle className="size-6" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Missing Documents</p>
-              <h3 className="text-3xl font-black text-slate-800 mt-1">2</h3>
-            </div>
+          <div className="p-3 bg-rose-100 text-rose-600 rounded-2xl shrink-0">
+            <AlertCircle className="size-6" />
           </div>
-        </div>
+          <div>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Missing Documents</p>
+            <h3 className="text-3xl font-black text-slate-800 mt-1">2</h3>
+          </div>
+        </DashboardCard>
       </div>
-
 
       {/* Quick Access */}
       <div>
@@ -118,6 +108,6 @@ export default function LegalitasPage() {
         isOpen={isRecheckOpen}
         onClose={() => setIsRecheckOpen(false)}
       />
-    </div>
+    </DashboardPageWrapper>
   );
 }

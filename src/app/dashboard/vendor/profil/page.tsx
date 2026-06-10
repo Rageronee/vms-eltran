@@ -21,14 +21,65 @@ export default function ProfilPage() {
 
   const [draftData, setDraftData] = useState(formData);
 
+  const formatNPWP = (val: string) => {
+    const digits = val.replace(/\D/g, "").slice(0, 15);
+    let formatted = "";
+    if (digits.length > 0) formatted += digits.slice(0, 2);
+    if (digits.length > 2) formatted += "." + digits.slice(2, 5);
+    if (digits.length > 5) formatted += "." + digits.slice(5, 8);
+    if (digits.length > 8) formatted += "." + digits.slice(8, 9);
+    if (digits.length > 9) formatted += "-" + digits.slice(9, 12);
+    if (digits.length > 12) formatted += "." + digits.slice(12, 15);
+    return formatted;
+  };
+
   const handleInputChange = (field: keyof typeof draftData, value: string) => {
     setDraftData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^0-9+\-\s]/g, "");
+    handleInputChange("phone", val);
+  };
+
+  const handleNpwpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    const formatted = formatNPWP(val);
+    handleInputChange("npwp", formatted);
+  };
+
   const handleSave = () => {
     // Validate required fields
-    if (!draftData.companyName || !draftData.category || !draftData.npwp || !draftData.picName || !draftData.email || !draftData.phone || !draftData.address) {
+    if (
+      !draftData.companyName.trim() ||
+      !draftData.category.trim() ||
+      !draftData.npwp.trim() ||
+      !draftData.picName.trim() ||
+      !draftData.email.trim() ||
+      !draftData.phone.trim() ||
+      !draftData.address.trim()
+    ) {
       toast("Harap lengkapi semua kolom profil perusahaan.", "warning");
+      return;
+    }
+
+    // Validate email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(draftData.email.trim())) {
+      toast("Format email perusahaan tidak valid.", "warning");
+      return;
+    }
+
+    // Validate phone
+    const cleanPhone = draftData.phone.trim().replace(/\s|\-/g, "");
+    if (!/^\+?[0-9]{8,15}$/.test(cleanPhone)) {
+      toast("Format nomor telepon tidak valid (8-15 digit angka).", "warning");
+      return;
+    }
+
+    // Validate NPWP
+    const cleanNPWP = draftData.npwp.replace(/[^0-9]/g, "");
+    if (cleanNPWP.length !== 15 && cleanNPWP.length !== 16) {
+      toast("Format nomor NPWP tidak valid (harus 15 atau 16 digit angka).", "warning");
       return;
     }
     
@@ -143,7 +194,7 @@ export default function ProfilPage() {
                   <input
                     type="text"
                     value={draftData.npwp}
-                    onChange={(e) => handleInputChange("npwp", e.target.value)}
+                    onChange={handleNpwpChange}
                     className="w-full h-12 pl-12 pr-4 rounded-xl outline-none border border-border/60 bg-white focus:border-primary focus:ring-2 focus:ring-primary/10 text-slate-800 shadow-sm font-mono text-xs sm:text-sm transition-all"
                   />
                 </div>
@@ -212,7 +263,7 @@ export default function ProfilPage() {
                   <input
                     type="tel"
                     value={draftData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    onChange={handlePhoneChange}
                     className="w-full h-12 pl-12 pr-4 rounded-xl outline-none border border-border/60 bg-white focus:border-primary focus:ring-2 focus:ring-primary/10 text-slate-800 shadow-sm font-mono text-xs sm:text-sm transition-all"
                   />
                 </div>

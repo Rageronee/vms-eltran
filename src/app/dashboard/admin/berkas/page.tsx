@@ -87,16 +87,20 @@ export default function BerkasMasukPage() {
     toast(`Berhasil mengunduh dokumen "${docName}" ke komputer Anda.`, "success");
   };
 
-  // Filtered lists
-  const filteredDocuments = documents.filter((doc) => {
-    const matchesSearch =
-      doc.vendorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.docName.toLowerCase().includes(searchQuery.toLowerCase());
-      
-    const matchesCategory = categoryFilter === "All" || doc.category === categoryFilter;
+  // Filtered lists (memoized to avoid re-run on other state changes)
+  const filteredDocuments = React.useMemo(() => {
+    const query = searchQuery.toLowerCase().trim();
+    return documents.filter((doc) => {
+      const matchesSearch =
+        !query ||
+        doc.vendorName.toLowerCase().includes(query) ||
+        doc.docName.toLowerCase().includes(query);
+        
+      const matchesCategory = categoryFilter === "All" || doc.category === categoryFilter;
 
-    return matchesSearch && matchesCategory;
-  });
+      return matchesSearch && matchesCategory;
+    });
+  }, [searchQuery, categoryFilter, documents]);
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 px-4 sm:px-0">

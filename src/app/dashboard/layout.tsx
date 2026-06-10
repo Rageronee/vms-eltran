@@ -170,30 +170,30 @@ export default function DashboardLayout({
         <div className="flex-1 flex flex-col overflow-hidden bg-[#F8F9FA]">
 
           {/* Dashboard Top Header */}
-          <header className="h-20 bg-white border-b border-border/50 flex items-center justify-between px-6 md:px-8 shrink-0 shadow-sm relative z-30">
+          <header className="h-20 bg-white border-b border-border/50 flex items-center justify-between px-3 sm:px-6 md:px-8 shrink-0 shadow-sm relative z-30 gap-2 sm:gap-4">
 
             {/* Hamburger button for mobile toggling */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 flex-1">
               <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="md:hidden p-2 text-slate-600 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer"
+                className="md:hidden p-1.5 sm:p-2 text-slate-600 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer shrink-0"
               >
                 <Menu className="size-6" />
               </button>
 
               {/* Quick Search */}
-              <div className="relative w-48 sm:w-64 md:w-96">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+              <div className="relative w-full max-w-[140px] xs:max-w-[180px] sm:max-w-[250px] md:max-w-[380px]">
+                <Search className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 size-3.5 sm:size-4 text-muted-foreground" />
                 <input
                   type="text"
-                  placeholder="Cari berkas, proyek, atau info..."
-                  className="w-full h-10 pl-10 pr-4 bg-slate-50 border border-border/40 rounded-xl text-xs sm:text-sm outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-muted-foreground"
+                  placeholder="Cari data..."
+                  className="w-full h-9 sm:h-10 pl-8 sm:pl-10 pr-3 bg-slate-50 border border-border/40 rounded-xl text-[11px] sm:text-sm outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-muted-foreground"
                 />
               </div>
             </div>
 
             {/* User actions */}
-            <div className="flex items-center gap-4 sm:gap-6">
+            <div className="flex items-center gap-1 sm:gap-4 shrink-0">
 
               {/* Notifications Dropdown */}
               <div className="relative" ref={notifRef}>
@@ -204,7 +204,7 @@ export default function DashboardLayout({
                     setIsProfileOpen(false);
                   }}
                   className={cn(
-                    "relative text-muted-foreground hover:text-primary transition-colors cursor-pointer p-2 rounded-xl hover:bg-slate-50",
+                    "relative text-muted-foreground hover:text-primary transition-colors cursor-pointer p-1.5 sm:p-2 rounded-xl hover:bg-slate-50",
                     isNotifOpen && "text-primary bg-slate-50"
                   )}
                 >
@@ -213,7 +213,7 @@ export default function DashboardLayout({
                 </button>
 
                  {isNotifOpen && (
-                  <div className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 top-20 sm:top-[calc(100%+8px)] z-50 w-auto sm:w-80 rounded-2xl border border-border bg-white shadow-elegant animate-in fade-in duration-200">
+                  <div className="fixed left-1/2 -translate-x-1/2 top-20 sm:absolute sm:top-[calc(100%+8px)] z-50 w-[90vw] sm:w-[320px] rounded-2xl border border-border bg-white shadow-elegant animate-in fade-in duration-200 origin-top">
                     <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                       <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Notifikasi Sistem</span>
                       <span className="text-[10px] bg-secondary/10 text-secondary font-bold px-2 py-0.5 rounded-full">
@@ -223,29 +223,29 @@ export default function DashboardLayout({
                     <div className="max-h-64 overflow-y-auto divide-y divide-slate-50 p-2">
                       {isAdmin ? (
                         <>
-                          <div className="p-2.5 hover:bg-slate-50 rounded-xl transition-colors text-left">
-                            <span className="text-xs font-bold text-slate-800 block">Pendaftaran Vendor Baru</span>
+                          <Link href="/dashboard/admin" onClick={() => setIsNotifOpen(false)} className="block p-2.5 hover:bg-slate-50 rounded-xl transition-colors text-left group">
+                            <span className="text-xs font-bold text-slate-800 block group-hover:text-primary transition-colors">Pendaftaran Vendor Baru</span>
                             <span className="text-[11px] text-slate-500 mt-1 block">PT Global Net Solutions mendaftar ke portal VMS.</span>
                             <span className="text-[9px] text-slate-400 font-bold block mt-1.5 uppercase font-mono">Baru saja</span>
-                          </div>
-                          <div className="p-2.5 hover:bg-slate-50 rounded-xl transition-colors text-left">
-                            <span className="text-xs font-bold text-slate-800 block">Unggahan Berkas Baru</span>
+                          </Link>
+                          <Link href="/dashboard/admin/berkas" onClick={() => setIsNotifOpen(false)} className="block p-2.5 hover:bg-slate-50 rounded-xl transition-colors text-left group">
+                            <span className="text-xs font-bold text-slate-800 block group-hover:text-primary transition-colors">Unggahan Berkas Baru</span>
                             <span className="text-[11px] text-slate-500 mt-1 block">PT Sinar Tower Nusantara mengunggah NIB terbaru.</span>
                             <span className="text-[9px] text-slate-400 font-bold block mt-1.5 uppercase font-mono">10 menit lalu</span>
-                          </div>
+                          </Link>
                         </>
                       ) : (
                         <>
-                          <div className="p-2.5 hover:bg-slate-50 rounded-xl transition-colors text-left">
-                            <span className="text-xs font-bold text-emerald-700 block">Dokumen Disetujui</span>
+                          <Link href="/dashboard/vendor/legalitas" onClick={() => setIsNotifOpen(false)} className="block p-2.5 hover:bg-slate-50 rounded-xl transition-colors text-left group">
+                            <span className="text-xs font-bold text-emerald-700 block group-hover:text-emerald-600 transition-colors">Dokumen Disetujui</span>
                             <span className="text-[11px] text-slate-500 mt-1 block">Akta Pendirian PT Sinar Tower Nusantara disetujui admin.</span>
                             <span className="text-[9px] text-slate-400 font-bold block mt-1.5 uppercase font-mono">15 menit lalu</span>
-                          </div>
-                          <div className="p-2.5 hover:bg-slate-50 rounded-xl transition-colors text-left">
-                            <span className="text-xs font-bold text-secondary block">Tenggat Waktu SPH</span>
+                          </Link>
+                          <Link href="/dashboard/vendor/penawaran" onClick={() => setIsNotifOpen(false)} className="block p-2.5 hover:bg-slate-50 rounded-xl transition-colors text-left group">
+                            <span className="text-xs font-bold text-secondary block group-hover:text-red-500 transition-colors">Tenggat Waktu SPH</span>
                             <span className="text-[11px] text-slate-500 mt-1 block">Segera unggah dokumen SPH Anda untuk proyek Fiber Optic.</span>
                             <span className="text-[9px] text-slate-400 font-bold block mt-1.5 uppercase font-mono">3 hari tersisa</span>
-                          </div>
+                          </Link>
                         </>
                       )}
                     </div>
@@ -271,7 +271,7 @@ export default function DashboardLayout({
                     setIsProfileOpen(false);
                   }}
                   className={cn(
-                    "relative text-muted-foreground hover:text-primary transition-colors p-2 rounded-xl hover:bg-slate-50 cursor-pointer",
+                    "relative text-muted-foreground hover:text-primary transition-colors p-1.5 sm:p-2 rounded-xl hover:bg-slate-50 cursor-pointer",
                     isMsgOpen && "text-primary bg-slate-50"
                   )}
                 >
@@ -280,7 +280,7 @@ export default function DashboardLayout({
                 </button>
 
                  {isMsgOpen && (
-                  <div className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 top-20 sm:top-[calc(100%+8px)] z-50 w-auto sm:w-80 rounded-2xl border border-border bg-white shadow-elegant animate-in fade-in duration-200">
+                  <div className="fixed left-1/2 -translate-x-1/2 top-20 sm:absolute sm:top-[calc(100%+8px)] z-50 w-[90vw] sm:w-[320px] rounded-2xl border border-border bg-white shadow-elegant animate-in fade-in duration-200 origin-top">
                     <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                       <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Pesan Masuk</span>
                     </div>
@@ -320,9 +320,9 @@ export default function DashboardLayout({
                     setIsNotifOpen(false);
                     setIsMsgOpen(false);
                   }}
-                  className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-border/50 cursor-pointer group p-1.5 rounded-lg hover:bg-slate-50 transition-all"
+                  className="flex items-center gap-2 pl-1 sm:pl-3 border-l border-border/50 cursor-pointer group p-1 sm:p-1.5 rounded-lg hover:bg-slate-50 transition-all"
                 >
-                  <div className="size-9 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-sm uppercase">
+                  <div className="size-8 sm:size-9 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-xs sm:text-sm uppercase shrink-0">
                     {isAdmin ? "AD" : "VN"}
                   </div>
                   <div className="hidden flex-col text-left md:flex">

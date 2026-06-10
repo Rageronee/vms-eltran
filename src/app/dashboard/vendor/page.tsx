@@ -5,15 +5,15 @@ import { Home, Calendar, ShieldCheck, FileText, CheckCircle, Clock, UserCircle, 
 import Link from "next/link";
 import { ProjectDetailModal } from "@/components/ui/ProjectDetailModal";
 import { VendorRecheckModal } from "@/components/ui/VendorRecheckModal";
-import { DataHistoryModal } from "@/components/ui/DataHistoryModal";
 import { useToast } from "@/components/ui/Toast";
+import { DashboardPageWrapper, DashboardHeader, DashboardCard, DashboardCardHeader } from "@/components/layout/DashboardWrappers";
 
 export default function VendorDashboard() {
   const { toast } = useToast();
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isRecheckOpen, setIsRecheckOpen] = useState(false);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  
   const handleProjectDetail = (project: any) => {
     setSelectedProject(project);
     setIsDetailOpen(true);
@@ -24,20 +24,14 @@ export default function VendorDashboard() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <DashboardPageWrapper>
       
       {/* Top Header Section */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
-            <Home className="size-7" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Dashboard Vendor</h1>
-            <p className="text-sm text-muted-foreground">Kelola kemitraan, verifikasi profil, dan pantau proyek berjalan Anda.</p>
-          </div>
-        </div>
-        
+      <DashboardHeader 
+        icon={<Home className="size-7" />}
+        title="Dashboard Vendor"
+        description="Kelola kemitraan, verifikasi profil, dan pantau proyek berjalan Anda."
+      >
         {/* Contact info and date */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 text-xs font-semibold text-slate-600 bg-white px-5 py-3 rounded-2xl border border-border/50 shadow-sm shrink-0">
           <div>
@@ -53,10 +47,10 @@ export default function VendorDashboard() {
             </span>
           </div>
         </div>
-      </div>
+      </DashboardHeader>
 
       {/* Verification Status Banner */}
-      <div className="bg-white border border-border/40 p-6 rounded-3xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <DashboardCard className="p-6 md:flex-row md:items-center justify-between gap-6 !rounded-3xl">
         <div className="flex items-center gap-4">
           <div className="size-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shrink-0">
             <ShieldCheck className="size-6" />
@@ -71,13 +65,7 @@ export default function VendorDashboard() {
             <p className="text-xs text-muted-foreground mt-0.5">PT Sinar Tower Nusantara telah terverifikasi secara resmi untuk berpartisipasi dalam penawaran proyek PT Eltran Indonesia.</p>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-3 shrink-0">
-          <button
-            onClick={() => setIsHistoryOpen(true)}
-            className="inline-flex items-center gap-1 bg-amber-100 hover:bg-amber-200 border border-amber-200 px-3.5 py-1.5 rounded-xl text-xs font-bold text-amber-800 cursor-pointer transition-colors"
-          >
-            Riwayat Perubahan
-          </button>
+        <div className="flex flex-wrap items-center gap-3 shrink-0 mt-4 md:mt-0">
           <button
             onClick={() => setIsRecheckOpen(true)}
             className="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 border border-border/80 px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 cursor-pointer transition-colors"
@@ -88,64 +76,61 @@ export default function VendorDashboard() {
             ISO 37001 SMAP
           </span>
         </div>
-      </div>
+      </DashboardCard>
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Profile Summary Card */}
-        <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col justify-between relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-8">
-            <Link 
-              href="/dashboard/vendor/profil" 
-              className="inline-flex items-center gap-2 bg-primary/10 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300"
-            >
-              <UserCircle className="size-4" /> Kelola Profil
-            </Link>
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
-              <UserCircle className="size-5 text-primary" /> Profil Perusahaan
-            </h2>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 border-b border-border/30 pb-4">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Vendor</span>
-                <span className="text-sm font-bold text-slate-800 md:col-span-2">PT Sinar Tower Nusantara</span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 border-b border-border/30 pb-4">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Kategori Bisnis</span>
-                <span className="text-sm font-semibold text-slate-800 md:col-span-2">Konstruksi Telekomunikasi & Fiber Optic</span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 border-b border-border/30 pb-4">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">NPWP / Tax ID</span>
-                <span className="text-sm font-mono text-slate-800 md:col-span-2">01.234.567.8-901.000</span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 border-b border-border/30 pb-4">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Direktur / PIC</span>
-                <span className="text-sm font-medium text-slate-800 md:col-span-2">Ir. Bambang Triyono</span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 pt-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Kelengkapan Berkas</span>
-                <div className="md:col-span-2 flex items-center gap-2">
-                  <span className="inline-flex bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg text-xs font-bold border border-emerald-200">
-                    Lengkap (100%)
-                  </span>
-                  <span className="text-xs text-muted-foreground">NIB, Deed, NPWP, SKT, SKPP Terverifikasi</span>
-                </div>
+        <DashboardCard className="lg:col-span-2 group">
+          <DashboardCardHeader 
+            title={<><UserCircle className="size-5 text-primary" /> Profil Perusahaan</>}
+            className="!text-primary"
+          >
+             <Link 
+                href="/dashboard/vendor/profil" 
+                className="inline-flex w-fit items-center gap-2 bg-primary/10 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 shrink-0"
+              >
+                <UserCircle className="size-4" /> Kelola Profil
+              </Link>
+          </DashboardCardHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 border-b border-border/30 pb-4">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Vendor</span>
+              <span className="text-sm font-bold text-slate-800 md:col-span-2">PT Sinar Tower Nusantara</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 border-b border-border/30 pb-4">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Kategori Bisnis</span>
+              <span className="text-sm font-semibold text-slate-800 md:col-span-2">Konstruksi Telekomunikasi & Fiber Optic</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 border-b border-border/30 pb-4">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">NPWP / Tax ID</span>
+              <span className="text-sm font-mono text-slate-800 md:col-span-2">01.234.567.8-901.000</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 border-b border-border/30 pb-4">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Direktur / PIC</span>
+              <span className="text-sm font-medium text-slate-800 md:col-span-2">Ir. Bambang Triyono</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2 pt-2">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Kelengkapan Berkas</span>
+              <div className="md:col-span-2 flex items-center gap-2">
+                <span className="inline-flex bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg text-xs font-bold border border-emerald-200">
+                  Lengkap (100%)
+                </span>
+                <span className="text-xs text-muted-foreground">NIB, Deed, NPWP, SKT, SKPP Terverifikasi</span>
               </div>
             </div>
           </div>
-        </div>
+        </DashboardCard>
 
         {/* Detailed Progress Card */}
-        <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col justify-between relative overflow-hidden">
-          <div className="relative z-10 w-full text-left mb-6 flex justify-between items-start">
-            <div>
-              <h2 className="text-lg font-bold text-slate-800">Ringkasan Kinerja</h2>
-              <p className="text-xs text-muted-foreground mt-1">Performa proyek & tagihan</p>
-            </div>
-            <div className="p-2 bg-slate-50 border border-border/50 rounded-xl text-primary">
+        <DashboardCard>
+          <DashboardCardHeader 
+            title="Ringkasan Kinerja"
+            subtitle="Performa proyek & tagihan"
+          >
+             <div className="p-2 bg-slate-50 border border-border/50 rounded-xl text-primary">
               <TrendingUp className="size-5" />
             </div>
-          </div>
+          </DashboardCardHeader>
           
           <div className="relative z-10 space-y-6">
             <div>
@@ -173,24 +158,23 @@ export default function VendorDashboard() {
               <span className="text-xl font-bold text-slate-800 font-mono">Rp 4.250.000.000</span>
             </div>
           </div>
-        </div>
+        </DashboardCard>
       </div>
 
       {/* Tasks and Activities Section */}
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Pending Tasks (Notifications) */}
-        <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col h-full">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold text-slate-800">Tugas Tertunda</h2>
+        <DashboardCard className="h-full">
+          <DashboardCardHeader title="Tugas Tertunda">
             <span className="inline-flex bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-border/50">
               2 Aksi
             </span>
-          </div>
+          </DashboardCardHeader>
           
           <div className="space-y-4 flex-1">
-            <div className="flex flex-col gap-3 p-5 bg-white rounded-2xl border-l-4 border-l-rose-500 border border-border/60 shadow-sm">
+            <div className="flex flex-col gap-3 p-5 bg-white rounded-2xl border-l-4 border-l-secondary border border-border/60 shadow-sm">
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-slate-50 text-rose-500 rounded-lg border border-border/50 shrink-0">
+                <div className="p-2 bg-secondary/10 text-secondary rounded-lg border border-secondary/20 shrink-0">
                   <FileText className="size-5" />
                 </div>
                 <div className="flex-1">
@@ -199,7 +183,7 @@ export default function VendorDashboard() {
                 </div>
               </div>
               <div className="flex justify-end mt-2">
-                <button className="text-xs font-bold border border-rose-200 text-rose-600 hover:bg-rose-50 px-5 py-2 rounded-xl transition-colors cursor-pointer">
+                <button className="text-xs font-bold border border-secondary/20 text-secondary hover:bg-secondary/10 px-5 py-2 rounded-xl transition-colors cursor-pointer">
                   Unggah SPH
                 </button>
               </div>
@@ -222,16 +206,16 @@ export default function VendorDashboard() {
               </div>
             </div>
           </div>
-        </div>
+        </DashboardCard>
 
         {/* Recent Activities */}
-        <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col h-full">
-          <h2 className="text-lg font-bold text-slate-800 mb-6">Aktivitas Terkini</h2>
+        <DashboardCard className="h-full">
+          <DashboardCardHeader title="Aktivitas Terkini" />
           
           <div className="relative pl-4 border-l-2 border-slate-100 space-y-6 flex-1 py-2">
             
             <div className="relative">
-              <div className="absolute -left-[23px] top-1 size-3 bg-emerald-500 rounded-full ring-4 ring-white" />
+              <div className="absolute -left-[23px] top-1 size-3 bg-emerald-600 rounded-full ring-4 ring-white" />
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-bold text-slate-800">Invoice #INV-2026-042 Terbayar</span>
                 <span className="text-xs text-slate-500">Pembayaran termin ke-2 proyek Fiber Optic telah ditransfer.</span>
@@ -249,7 +233,7 @@ export default function VendorDashboard() {
             </div>
 
             <div className="relative">
-              <div className="absolute -left-[23px] top-1 size-3 bg-blue-500 rounded-full ring-4 ring-white" />
+              <div className="absolute -left-[23px] top-1 size-3 bg-amber-500 rounded-full ring-4 ring-white" />
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-bold text-slate-800">Penugasan Proyek Baru</span>
                 <span className="text-xs text-slate-500">Anda ditugaskan pada proyek &quot;Maintenance Menara BTS Jawa Barat&quot;.</span>
@@ -258,17 +242,16 @@ export default function VendorDashboard() {
             </div>
 
           </div>
-        </div>
+        </DashboardCard>
       </div>
 
       {/* Current Project Table Section */}
-      <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm">
-        <div className="flex items-center justify-between mb-6 border-b border-border/50 pb-4">
-          <h2 className="text-lg font-bold text-slate-800">Proyek Kemitraan Sedang Berjalan</h2>
-          <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs font-bold border border-primary/20">
+      <DashboardCard>
+        <DashboardCardHeader title="Proyek Kemitraan Sedang Berjalan">
+          <span className="inline-flex w-fit shrink-0 items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs font-bold border border-primary/20 whitespace-nowrap">
             <TrendingUp className="size-3.5" /> 2 Proyek Aktif
           </span>
-        </div>
+        </DashboardCardHeader>
         <div className="overflow-x-auto pb-4">
           <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
@@ -302,7 +285,7 @@ export default function VendorDashboard() {
                       <span>75%</span>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-border/20">
-                      <div className="bg-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: '75%' }} />
+                      <div className="bg-emerald-600 h-full rounded-full transition-all duration-500" style={{ width: '75%' }} />
                     </div>
                   </div>
                 </td>
@@ -320,7 +303,7 @@ export default function VendorDashboard() {
                       <FileText className="size-4" />
                       <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Detail</span>
                     </button>
-                    <button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors tooltip-trigger relative group/btn">
+                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors tooltip-trigger relative group/btn">
                       <TrendingUp className="size-4" />
                       <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Upload Laporan</span>
                     </button>
@@ -348,13 +331,13 @@ export default function VendorDashboard() {
                 <td className="p-4 pr-8">
                   <div className="flex flex-col gap-2.5">
                     <div className="flex items-center justify-between text-xs font-black text-slate-700">
-                      <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
                         <Clock className="size-3" /> Persiapan
                       </span>
                       <span>15%</span>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-border/20">
-                      <div className="bg-blue-500 h-full rounded-full transition-all duration-500" style={{ width: '15%' }} />
+                      <div className="bg-amber-500 h-full rounded-full transition-all duration-500" style={{ width: '15%' }} />
                     </div>
                   </div>
                 </td>
@@ -372,7 +355,7 @@ export default function VendorDashboard() {
                       <FileText className="size-4" />
                       <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Detail</span>
                     </button>
-                    <button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors relative group/btn">
+                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors relative group/btn">
                       <TrendingUp className="size-4" />
                       <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Upload Laporan</span>
                     </button>
@@ -386,7 +369,7 @@ export default function VendorDashboard() {
             </tbody>
           </table>
         </div>
-      </div>
+      </DashboardCard>
 
       {/* Project Detail Modal */}
       <ProjectDetailModal
@@ -402,11 +385,6 @@ export default function VendorDashboard() {
         onClose={() => setIsRecheckOpen(false)}
       />
 
-      {/* Data History Modal */}
-      <DataHistoryModal
-        isOpen={isHistoryOpen}
-        onClose={() => setIsHistoryOpen(false)}
-      />
-    </div>
+    </DashboardPageWrapper>
   );
 }

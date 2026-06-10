@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { FileSignature, Download, Upload, FileText, FileUp, Check, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { DashboardPageWrapper, DashboardHeader, DashboardCard, DashboardCardHeader } from "@/components/layout/DashboardWrappers";
 
 export default function PenawaranPage() {
   const { toast } = useToast();
@@ -42,21 +43,17 @@ export default function PenawaranPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <DashboardPageWrapper>
       
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
-          <FileSignature className="size-7" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Penawaran Proyek</h1>
-          <p className="text-sm text-muted-foreground">Kelola penawaran proyek aktif dan unggah dokumen kelengkapan teknis serta komersial.</p>
-        </div>
-      </div>
+      <DashboardHeader
+        icon={<FileSignature className="size-7" />}
+        title="Penawaran Proyek"
+        description="Kelola penawaran proyek aktif dan unggah dokumen kelengkapan teknis serta komersial."
+      />
 
       {/* Status Card */}
-      <div className="bg-white rounded-3xl p-8 border border-border/50 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <DashboardCard className="!p-6 md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Reference ID</p>
           <p className="text-sm font-bold text-slate-800 mt-1">ELT-FO-2025-089</p>
@@ -81,7 +78,7 @@ export default function PenawaranPage() {
             </span>
           )}
         </div>
-      </div>
+      </DashboardCard>
 
       {/* Document from SCM */}
       <div className="space-y-4">
@@ -90,7 +87,7 @@ export default function PenawaranPage() {
         </h2>
         <div className="grid gap-4 md:grid-cols-2">
           
-          <div className="bg-slate-50 rounded-2xl p-5 flex items-center justify-between border border-border/60 group hover:border-primary/30 transition-all">
+          <div className="bg-white rounded-3xl p-5 flex items-center justify-between border border-border/60 group hover:border-primary/30 transition-all shadow-sm">
             <div className="flex items-center gap-3">
               <div className="p-2.5 bg-primary/5 text-primary rounded-xl shrink-0">
                 <FileText className="size-5" />
@@ -108,7 +105,7 @@ export default function PenawaranPage() {
             </button>
           </div>
 
-          <div className="bg-slate-50 rounded-2xl p-5 flex items-center justify-between border border-border/60 group hover:border-primary/30 transition-all">
+          <div className="bg-white rounded-3xl p-5 flex items-center justify-between border border-border/60 group hover:border-primary/30 transition-all shadow-sm">
             <div className="flex items-center gap-3">
               <div className="p-2.5 bg-primary/5 text-primary rounded-xl shrink-0">
                 <FileText className="size-5" />
@@ -134,78 +131,80 @@ export default function PenawaranPage() {
         <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 pl-1">
           <FileUp className="size-5 text-primary" /> Pengunggahan Berkas Balasan
         </h2>
-        <div className="space-y-4 bg-white p-6 md:p-8 rounded-3xl border border-border/50 shadow-sm">
+        <DashboardCard className="!p-6 md:!p-8">
           
-          {/* Item 1 */}
-          <div className="bg-slate-50 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border/60">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-primary text-white rounded-xl shrink-0">
-                <FileText className="size-5" />
+          <div className="space-y-4">
+            {/* Item 1 */}
+            <div className="bg-slate-50 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border/60">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-primary text-white rounded-xl shrink-0">
+                  <FileText className="size-5" />
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-slate-800 block">Isian Comply List</span>
+                  <span className="text-xs text-slate-500">
+                    {complyFile ? (
+                      <span className="text-emerald-600 font-bold flex items-center gap-1 mt-0.5">
+                        ✓ {complyFile}
+                      </span>
+                    ) : (
+                      "PDF, DOCX (Maksimal 5MB)"
+                    )}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className="text-sm font-bold text-slate-800 block">Isian Comply List</span>
-                <span className="text-xs text-slate-500">
-                  {complyFile ? (
-                    <span className="text-emerald-600 font-bold flex items-center gap-1 mt-0.5">
-                      ✓ {complyFile}
-                    </span>
-                  ) : (
-                    "PDF, DOCX (Maksimal 5MB)"
-                  )}
-                </span>
-              </div>
+              {status === "Pending Upload" && (
+                <button
+                  onClick={() => simulateUpload("comply")}
+                  className="w-full sm:w-auto bg-white border border-primary/20 text-primary hover:bg-primary/5 font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+                >
+                  {complyFile ? "Unggah Ulang" : "Unggah Berkas"}
+                </button>
+              )}
             </div>
+
+            {/* Item 2 */}
+            <div className="bg-slate-50 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border/60">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-primary text-white rounded-xl shrink-0">
+                  <FileText className="size-5" />
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-slate-800 block">Surat Penawaran Harga (SPH)</span>
+                  <span className="text-xs text-slate-500">
+                    {sphFile ? (
+                      <span className="text-emerald-600 font-bold flex items-center gap-1 mt-0.5">
+                        ✓ {sphFile}
+                      </span>
+                    ) : (
+                      "PDF Terenkripsi (Maksimal 5MB)"
+                    )}
+                  </span>
+                </div>
+              </div>
+              {status === "Pending Upload" && (
+                <button
+                  onClick={() => simulateUpload("sph")}
+                  className="w-full sm:w-auto bg-white border border-primary/20 text-primary hover:bg-primary/5 font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+                >
+                  {sphFile ? "Unggah Ulang" : "Unggah Berkas"}
+                </button>
+              )}
+            </div>
+
+            {/* Submit Action */}
             {status === "Pending Upload" && (
-              <button
-                onClick={() => simulateUpload("comply")}
-                className="w-full sm:w-auto bg-white border border-primary/20 text-primary hover:bg-primary/5 font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
-              >
-                {complyFile ? "Unggah Ulang" : "Unggah Berkas"}
-              </button>
+              <div className="pt-6 flex justify-end">
+                <button
+                  onClick={handleSubmitClick}
+                  className="bg-primary hover:bg-primary-hover text-white font-bold text-xs px-8 py-3 rounded-xl transition-all shadow-md hover:shadow-lg shadow-primary/20 cursor-pointer"
+                >
+                  Kirim Penawaran
+                </button>
+              </div>
             )}
           </div>
-
-          {/* Item 2 */}
-          <div className="bg-slate-50 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border/60">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-primary text-white rounded-xl shrink-0">
-                <FileText className="size-5" />
-              </div>
-              <div>
-                <span className="text-sm font-bold text-slate-800 block">Surat Penawaran Harga (SPH)</span>
-                <span className="text-xs text-slate-500">
-                  {sphFile ? (
-                    <span className="text-emerald-600 font-bold flex items-center gap-1 mt-0.5">
-                      ✓ {sphFile}
-                    </span>
-                  ) : (
-                    "PDF Terenkripsi (Maksimal 5MB)"
-                  )}
-                </span>
-              </div>
-            </div>
-            {status === "Pending Upload" && (
-              <button
-                onClick={() => simulateUpload("sph")}
-                className="w-full sm:w-auto bg-white border border-primary/20 text-primary hover:bg-primary/5 font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
-              >
-                {sphFile ? "Unggah Ulang" : "Unggah Berkas"}
-              </button>
-            )}
-          </div>
-
-          {/* Submit Action */}
-          {status === "Pending Upload" && (
-            <div className="pt-6 flex justify-end">
-              <button
-                onClick={handleSubmitClick}
-                className="bg-primary hover:bg-primary-hover text-white font-bold text-xs px-8 py-3 rounded-xl transition-all shadow-md hover:shadow-lg shadow-primary/20 cursor-pointer"
-              >
-                Kirim Penawaran
-              </button>
-            </div>
-          )}
-        </div>
+        </DashboardCard>
       </div>
 
       {/* ConfirmModal for Submission */}
@@ -218,6 +217,6 @@ export default function PenawaranPage() {
         confirmText="Ya, Kirim"
         cancelText="Batal"
       />
-    </div>
+    </DashboardPageWrapper>
   );
 }

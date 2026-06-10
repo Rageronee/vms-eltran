@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { TableData } from "@/components/ui/TableData";
 import { ChevronLeft, ArrowRight, FileText, AlertTriangle } from "lucide-react";
-
+import { cn } from "@/lib/utils";
 // Interactive File Upload Input Component
 const FileUploadInput = ({
   label,
@@ -18,12 +18,14 @@ const FileUploadInput = ({
   placeholder,
   fileName,
   onFileSelect,
+  error,
 }: {
   label: string;
   required?: boolean;
   placeholder: string;
   fileName?: string;
   onFileSelect: (name: string) => void;
+  error?: string;
 }) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -43,7 +45,10 @@ const FileUploadInput = ({
       <label className="text-sm font-semibold text-foreground">
         {label} {required && <span className="text-secondary">*</span>}
       </label>
-      <div className="flex items-center h-12 w-full rounded-xl border border-border/50 bg-surface-dim overflow-hidden transition-all hover:border-primary/50">
+      <div className={cn(
+        "flex items-center h-12 w-full rounded-xl border bg-surface-dim overflow-hidden transition-all",
+        error ? "border-secondary" : "border-border/50 hover:border-primary/50"
+      )}>
         <input
           type="file"
           ref={fileInputRef}
@@ -54,7 +59,10 @@ const FileUploadInput = ({
         <Button
           type="button"
           onClick={handleButtonClick}
-          className="h-full rounded-none px-6 bg-primary hover:bg-primary-hover text-white shadow-none shrink-0 cursor-pointer"
+          className={cn(
+            "h-full rounded-none px-6 text-white shadow-none shrink-0 cursor-pointer",
+            error ? "bg-secondary hover:bg-secondary-hover" : "bg-primary hover:bg-primary-hover"
+          )}
         >
           Upload
         </Button>
@@ -68,6 +76,11 @@ const FileUploadInput = ({
           )}
         </span>
       </div>
+      {error && (
+        <span className="text-xs font-semibold text-secondary animate-in fade-in duration-200">
+          {error}
+        </span>
+      )}
     </div>
   );
 };
@@ -80,6 +93,9 @@ export default function RegisterPage() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [dataConfirmed, setDataConfirmed] = useState(false);
+
+  // Validation errors state
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Consolidated Form State
   const [formData, setFormData] = useState({
@@ -149,28 +165,46 @@ export default function RegisterPage() {
     agreeToStatementLetter: false,
   });
 
+  // Format NPWP helper (XX.XXX.XXX.X-XXX.XXX)
+  const formatNPWP = (val: string) => {
+    const digits = val.replace(/\D/g, "").slice(0, 15);
+    let formatted = "";
+    if (digits.length > 0) formatted += digits.slice(0, 2);
+    if (digits.length > 2) formatted += "." + digits.slice(2, 5);
+    if (digits.length > 5) formatted += "." + digits.slice(5, 8);
+    if (digits.length > 8) formatted += "." + digits.slice(8, 9);
+    if (digits.length > 9) formatted += "-" + digits.slice(9, 12);
+    if (digits.length > 12) formatted += "." + digits.slice(12, 15);
+    return formatted;
+  };
+
   // Load from localStorage on mount
   useEffect(() => {
     const savedDraft = localStorage.getItem("vendorRegisterDraft");
-    if (savedDraft) {
+    if (savedDraft && savedDraft.trim()) {
       try {
-        const { step: savedStep, formData: savedFormData } = JSON.parse(savedDraft);
-        if (savedStep) setStep(savedStep);
-        if (savedFormData) setFormData(savedFormData);
+        const parsed = JSON.parse(savedDraft);
+        if (parsed && typeof parsed === "object" && parsed.formData) {
+          setFormData(parsed.formData);
+        }
       } catch (e) {
         console.error("Failed to parse register draft", e);
       }
     }
   }, []);
 
-  // Save to localStorage on change
+  // Save to localStorage with debounce on change to keep typing smooth and responsive
   const isInitialMount = useRef(true);
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;
     }
-    localStorage.setItem("vendorRegisterDraft", JSON.stringify({ step, formData }));
+    const timer = setTimeout(() => {
+      localStorage.setItem("vendorRegisterDraft", JSON.stringify({ step, formData }));
+    }, 800);
+
+    return () => clearTimeout(timer);
   }, [step, formData]);
 
   const handleFinalSubmit = () => {
@@ -182,21 +216,215 @@ export default function RegisterPage() {
 
   const handleInputChange = (field: keyof typeof formData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear error for this field when edited
+    if (errors[field]) {
+      setErrors((prev) => {
+        const nextErrors = { ...prev };
+        delete nextErrors[field];
+        return nextErrors;
+      });
+    }
   };
 
-  const next = () => setStep((s) => Math.min(5, s + 1));
-  const back = () => setStep((s) => Math.max(1, s - 1));
+  // Input Handlers with restrictions
+  const handleZipCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^0-9]/g, "").slice(0, 5);
+    handleInputChange("zipCode", val);
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^0-9+\-\s]/g, "");
+    handleInputChange("phone", val);
+  };
+
+  const handleFaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^0-9+\-\s]/g, "");
+    handleInputChange("fax", val);
+  };
+
+  const handleNpwpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    const formatted = formatNPWP(val);
+    handleInputChange("npwpNumber", formatted);
+  };
+
+  const validateStep = (currentStep: number): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (currentStep === 1) {
+      if (!formData.companyType.trim()) newErrors.companyType = "Bentuk badan usaha wajib diisi (misal: PT, CV).";
+      if (!formData.companyName.trim()) newErrors.companyName = "Nama perusahaan wajib diisi.";
+      if (!formData.businessField.trim()) newErrors.businessField = "Bidang usaha wajib diisi.";
+      if (!formData.subBusinessField.trim()) newErrors.subBusinessField = "Sub bidang usaha wajib diisi.";
+      if (!formData.ceoName.trim()) newErrors.ceoName = "Nama pemilik / CEO wajib diisi.";
+    }
+
+    if (currentStep === 2) {
+      if (!formData.country.trim()) newErrors.country = "Negara wajib diisi.";
+      if (!formData.province.trim()) newErrors.province = "Provinsi wajib diisi.";
+      if (!formData.city.trim()) newErrors.city = "Kota wajib diisi.";
+      if (!formData.district.trim()) newErrors.district = "Kecamatan wajib diisi.";
+      if (!formData.fullAddress.trim()) newErrors.fullAddress = "Alamat lengkap wajib diisi.";
+      
+      // Zip code validation
+      if (!formData.zipCode.trim()) {
+        newErrors.zipCode = "Kode pos wajib diisi.";
+      } else if (!/^\d{5}$/.test(formData.zipCode.trim())) {
+        newErrors.zipCode = "Kode pos harus terdiri dari 5 digit angka.";
+      }
+
+      // Phone validation
+      if (!formData.phone.trim()) {
+        newErrors.phone = "Nomor telepon wajib diisi.";
+      } else {
+        const cleanPhone = formData.phone.trim().replace(/\s|\-/g, "");
+        if (!/^\+?[0-9]{8,15}$/.test(cleanPhone)) {
+          newErrors.phone = "Format nomor telepon tidak valid (8-15 digit angka, contoh: +62812345678).";
+        }
+      }
+
+      // Fax validation (optional)
+      if (formData.fax.trim()) {
+        const cleanFax = formData.fax.trim().replace(/\s|\-/g, "");
+        if (!/^\+?[0-9]{8,15}$/.test(cleanFax)) {
+          newErrors.fax = "Format nomor fax tidak valid.";
+        }
+      }
+
+      // Email validation
+      if (!formData.email.trim()) {
+        newErrors.email = "Email perusahaan wajib diisi.";
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+        newErrors.email = "Format email tidak valid.";
+      }
+
+      // Website validation (optional)
+      if (formData.website.trim()) {
+        const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
+        if (!urlPattern.test(formData.website.trim())) {
+          newErrors.website = "Format URL website tidak valid (contoh: https://company.com).";
+        }
+      }
+
+      if (!formData.description.trim()) newErrors.description = "Deskripsi produk/jasa wajib diisi.";
+    }
+
+    if (currentStep === 3) {
+      // Deed of Establishment
+      if (!formData.deedNumber.trim()) newErrors.deedNumber = "Nomor akte pendirian wajib diisi.";
+      if (!formData.deedDate.trim()) newErrors.deedDate = "Tanggal akte pendirian wajib diisi.";
+      if (!formData.deedFile) newErrors.deedFile = "Dokumen akte pendirian wajib diunggah.";
+
+      // SK Kemenkumham
+      if (!formData.skNumber.trim()) newErrors.skNumber = "Nomor SK Kemenkumham wajib diisi.";
+      if (!formData.skDate.trim()) newErrors.skDate = "Tanggal SK Kemenkumham wajib diisi.";
+      if (!formData.skFile) newErrors.skFile = "Dokumen SK Kemenkumham wajib diunggah.";
+
+      // NIB
+      if (!formData.nibNumber.trim()) newErrors.nibNumber = "Nomor NIB wajib diisi.";
+      if (!formData.nibDate.trim()) newErrors.nibDate = "Tanggal NIB wajib diisi.";
+      if (!formData.nibFile) newErrors.nibFile = "Dokumen NIB wajib diunggah.";
+
+      // NPWP
+      if (!formData.npwpNumber.trim()) {
+        newErrors.npwpNumber = "Nomor NPWP wajib diisi.";
+      } else {
+        const cleanNPWP = formData.npwpNumber.replace(/[^0-9]/g, "");
+        if (cleanNPWP.length !== 15 && cleanNPWP.length !== 16) {
+          newErrors.npwpNumber = "Nomor NPWP tidak valid (harus 15 atau 16 digit angka).";
+        }
+      }
+      if (!formData.npwpFile) newErrors.npwpFile = "Dokumen NPWP wajib diunggah.";
+      
+      // Conditional checks for optional documents
+      if (formData.deedAmendmentNumber.trim() && !formData.deedAmendmentFile) {
+        newErrors.deedAmendmentFile = "Dokumen akte perubahan wajib diunggah jika nomor diisi.";
+      }
+      if (formData.deedAmendmentFile && !formData.deedAmendmentNumber.trim()) {
+        newErrors.deedAmendmentNumber = "Nomor akte perubahan wajib diisi jika dokumen diunggah.";
+      }
+
+      if (formData.sktNumber.trim() && !formData.sktFile) {
+        newErrors.sktFile = "Dokumen SKT wajib diunggah jika nomor diisi.";
+      }
+      if (formData.sktFile && !formData.sktNumber.trim()) {
+        newErrors.sktNumber = "Nomor SKT wajib diisi jika dokumen diunggah.";
+      }
+
+      if (formData.skppNumber.trim() && !formData.skppFile) {
+        newErrors.skppFile = "Dokumen SKPP wajib diunggah jika nomor diisi.";
+      }
+      if (formData.skppFile && !formData.skppNumber.trim()) {
+        newErrors.skppNumber = "Nomor SKPP wajib diisi jika dokumen diunggah.";
+      }
+
+      if (formData.financialReportNumber.trim() && !formData.financialReportFile) {
+        newErrors.financialReportFile = "Dokumen laporan keuangan wajib diunggah jika nomor diisi.";
+      }
+      if (formData.financialReportFile && !formData.financialReportNumber.trim()) {
+        newErrors.financialReportNumber = "Nomor laporan keuangan wajib diisi jika dokumen diunggah.";
+      }
+
+      if (formData.otherDocNumber.trim() && !formData.otherDocFile) {
+        newErrors.otherDocFile = "Dokumen legalitas lainnya wajib diunggah jika nomor diisi.";
+      }
+      if (formData.otherDocFile && !formData.otherDocNumber.trim()) {
+        newErrors.otherDocNumber = "Nomor dokumen legalitas lainnya wajib diisi jika dokumen diunggah.";
+      }
+    }
+
+    if (currentStep === 4) {
+      if (formData.products.length === 0) {
+        newErrors.products = "Silakan tambahkan minimal 1 barang atau jasa yang disediakan perusahaan Anda.";
+      }
+    }
+
+    if (currentStep === 5) {
+      if (!formData.agreeToStatementLetter) {
+        newErrors.agreeToStatementLetter = "Anda harus menyetujui Integrity Pact Statement Letter Agreement.";
+      }
+      if (!formData.selfAssessmentFile) {
+        newErrors.selfAssessmentFile = "Dokumen Self-Assessment Form wajib diunggah.";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const next = () => {
+    if (validateStep(step)) {
+      setStep((s) => Math.min(5, s + 1));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleStepJump = (targetStep: number) => {
+    if (targetStep > step) {
+      // Validate intermediate steps
+      for (let s = step; s < targetStep; s++) {
+        if (!validateStep(s)) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
+      }
+    }
+    setStep(targetStep);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const back = () => {
+    setStep((s) => Math.max(1, s - 1));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleSubmitClick = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.agreeToStatementLetter) {
-      setSubmitError("Anda harus menyetujui Statement Letter Agreement terlebih dahulu.");
-      return;
-    }
-
-    if (!formData.selfAssessmentFile) {
-      setSubmitError("Silakan unggah dokumen Self-Assessment Form terlebih dahulu.");
+    if (!validateStep(step)) {
+      setSubmitError("Silakan periksa kembali semua input wajib pada langkah ini.");
       return;
     }
 
@@ -218,14 +446,15 @@ export default function RegisterPage() {
         {/* Spacious Main Container with pt-36 offset for Fixed Header */}
         <main className="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-6 pt-36 pb-12 lg:px-10">
           <div className="rounded-4xl bg-white p-5 sm:p-8 md:p-14 shadow-elegant border border-border/40 backdrop-blur-sm">
-            <Stepper current={step} onJump={setStep} />
+            <Stepper current={step} onJump={handleStepJump} />
 
             <div className="mt-16 border-t border-border/60 pt-12">
               <h2 className="text-xl font-bold tracking-widest text-primary uppercase mb-10 text-center md:text-left">
                 {step === 1 && "Basic Information"}
                 {step === 2 && "Company Profile"}
                 {step === 3 && "Documents Vault"}
-                {step === 4 && "Supporting Documents"}
+                {step === 4 && "Product & Catalog"}
+                {step === 5 && "Supporting Documents"}
               </h2>
 
               <form className="mt-6" onSubmit={(e) => e.preventDefault()}>
@@ -254,24 +483,32 @@ export default function RegisterPage() {
                     <div className="grid gap-8 md:grid-cols-2">
                       <Input
                         label="Company Type"
+                        required
+                        error={errors.companyType}
                         placeholder="e.g. PT, CV, UD"
                         value={formData.companyType}
                         onChange={(e) => handleInputChange("companyType", e.target.value)}
                       />
                       <Input
                         label="Company Name"
+                        required
+                        error={errors.companyName}
                         placeholder="e.g. Eltran Indonesia"
                         value={formData.companyName}
                         onChange={(e) => handleInputChange("companyName", e.target.value)}
                       />
                       <Input
                         label="Business Field"
+                        required
+                        error={errors.businessField}
                         placeholder="e.g. Telecommunications"
                         value={formData.businessField}
                         onChange={(e) => handleInputChange("businessField", e.target.value)}
                       />
                       <Input
                         label="Sub Business Field"
+                        required
+                        error={errors.subBusinessField}
                         placeholder="e.g. Fiber Optic Construction"
                         value={formData.subBusinessField}
                         onChange={(e) => handleInputChange("subBusinessField", e.target.value)}
@@ -279,6 +516,8 @@ export default function RegisterPage() {
                       <div className="md:col-span-2">
                         <Input
                           label="Company Owner / CEO Name"
+                          required
+                          error={errors.ceoName}
                           placeholder="Full Name"
                           value={formData.ceoName}
                           onChange={(e) => handleInputChange("ceoName", e.target.value)}
@@ -294,24 +533,32 @@ export default function RegisterPage() {
                     <div className="grid gap-8 md:grid-cols-2">
                       <Input
                         label="Country"
+                        required
+                        error={errors.country}
                         placeholder="e.g. Indonesia"
                         value={formData.country}
                         onChange={(e) => handleInputChange("country", e.target.value)}
                       />
                       <Input
                         label="Province"
+                        required
+                        error={errors.province}
                         placeholder="e.g. Jawa Barat"
                         value={formData.province}
                         onChange={(e) => handleInputChange("province", e.target.value)}
                       />
                       <Input
                         label="City"
+                        required
+                        error={errors.city}
                         placeholder="e.g. Bandung"
                         value={formData.city}
                         onChange={(e) => handleInputChange("city", e.target.value)}
                       />
                       <Input
                         label="District"
+                        required
+                        error={errors.district}
                         placeholder="e.g. Coblong"
                         value={formData.district}
                         onChange={(e) => handleInputChange("district", e.target.value)}
@@ -319,6 +566,8 @@ export default function RegisterPage() {
                       <div className="col-span-full">
                         <Input
                           label="Full Address"
+                          required
+                          error={errors.fullAddress}
                           placeholder="Detailed street address, office suite, block..."
                           value={formData.fullAddress}
                           onChange={(e) => handleInputChange("fullAddress", e.target.value)}
@@ -326,9 +575,11 @@ export default function RegisterPage() {
                       </div>
                       <Input
                         label="Zip Code"
+                        required
+                        error={errors.zipCode}
                         placeholder="e.g. 40135"
                         value={formData.zipCode}
-                        onChange={(e) => handleInputChange("zipCode", e.target.value)}
+                        onChange={handleZipCodeChange}
                       />
                     </div>
 
@@ -338,20 +589,25 @@ export default function RegisterPage() {
                       <Input
                         label="Company Phone Number"
                         type="tel"
+                        required
+                        error={errors.phone}
                         placeholder="+62..."
                         value={formData.phone}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        onChange={handlePhoneChange}
                       />
                       <Input
                         label="Company Fax"
                         type="tel"
+                        error={errors.fax}
                         placeholder="+62..."
                         value={formData.fax}
-                        onChange={(e) => handleInputChange("fax", e.target.value)}
+                        onChange={handleFaxChange}
                       />
                       <Input
                         label="Company Email Address"
                         type="email"
+                        required
+                        error={errors.email}
                         placeholder="procurement@company.com"
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
@@ -359,6 +615,7 @@ export default function RegisterPage() {
                       <Input
                         label="Company Website"
                         type="url"
+                        error={errors.website}
                         placeholder="https://company.com"
                         value={formData.website}
                         onChange={(e) => handleInputChange("website", e.target.value)}
@@ -366,6 +623,8 @@ export default function RegisterPage() {
                       <div className="col-span-full">
                         <Input
                           label="Our Product / Services Description"
+                          required
+                          error={errors.description}
                           placeholder="Briefly describe products/services offered"
                           value={formData.description}
                           onChange={(e) => handleInputChange("description", e.target.value)}
@@ -384,6 +643,8 @@ export default function RegisterPage() {
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">Deed of Establishment</h3>
                         <Input
                           label="Deed Number"
+                          required
+                          error={errors.deedNumber}
                           placeholder="Number"
                           value={formData.deedNumber}
                           onChange={(e) => handleInputChange("deedNumber", e.target.value)}
@@ -391,11 +652,15 @@ export default function RegisterPage() {
                         <Input
                           label="Establishment Date"
                           type="date"
+                          required
+                          error={errors.deedDate}
                           value={formData.deedDate}
                           onChange={(e) => handleInputChange("deedDate", e.target.value)}
                         />
                         <FileUploadInput
                           label="Upload Deed"
+                          required
+                          error={errors.deedFile}
                           placeholder="Deed of Establishment.pdf"
                           fileName={formData.deedFile}
                           onFileSelect={(name) => handleInputChange("deedFile", name)}
@@ -405,6 +670,8 @@ export default function RegisterPage() {
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">SK Kemenhumham</h3>
                         <Input
                           label="Number"
+                          required
+                          error={errors.skNumber}
                           placeholder="Number"
                           value={formData.skNumber}
                           onChange={(e) => handleInputChange("skNumber", e.target.value)}
@@ -412,11 +679,15 @@ export default function RegisterPage() {
                         <Input
                           label="Date"
                           type="date"
+                          required
+                          error={errors.skDate}
                           value={formData.skDate}
                           onChange={(e) => handleInputChange("skDate", e.target.value)}
                         />
                         <FileUploadInput
                           label="Attachment"
+                          required
+                          error={errors.skFile}
                           placeholder="SK Kemenhumhan.pdf"
                           fileName={formData.skFile}
                           onFileSelect={(name) => handleInputChange("skFile", name)}
@@ -432,6 +703,7 @@ export default function RegisterPage() {
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">Deed of Amendment</h3>
                         <Input
                           label="Deed Number"
+                          error={errors.deedAmendmentNumber}
                           placeholder="Number"
                           value={formData.deedAmendmentNumber}
                           onChange={(e) => handleInputChange("deedAmendmentNumber", e.target.value)}
@@ -439,11 +711,13 @@ export default function RegisterPage() {
                         <Input
                           label="Establishment Date"
                           type="date"
+                          error={errors.deedAmendmentDate}
                           value={formData.deedAmendmentDate}
                           onChange={(e) => handleInputChange("deedAmendmentDate", e.target.value)}
                         />
                         <FileUploadInput
                           label="Upload Deed"
+                          error={errors.deedAmendmentFile}
                           placeholder="Deed of Amendment.pdf"
                           fileName={formData.deedAmendmentFile}
                           onFileSelect={(name) => handleInputChange("deedAmendmentFile", name)}
@@ -459,6 +733,8 @@ export default function RegisterPage() {
                         <h3 className="font-bold text-primary tracking-wide text-sm uppercase">NIB</h3>
                         <Input
                           label="Number"
+                          required
+                          error={errors.nibNumber}
                           placeholder="Number"
                           value={formData.nibNumber}
                           onChange={(e) => handleInputChange("nibNumber", e.target.value)}
@@ -466,6 +742,8 @@ export default function RegisterPage() {
                         <Input
                           label="Date"
                           type="date"
+                          required
+                          error={errors.nibDate}
                           value={formData.nibDate}
                           onChange={(e) => handleInputChange("nibDate", e.target.value)}
                         />
@@ -473,6 +751,8 @@ export default function RegisterPage() {
                       <div className="space-y-6 md:pt-11 flex flex-col justify-end">
                         <FileUploadInput
                           label="Attachment"
+                          required
+                          error={errors.nibFile}
                           placeholder="NIB.pdf"
                           fileName={formData.nibFile}
                           onFileSelect={(name) => handleInputChange("nibFile", name)}
@@ -488,14 +768,16 @@ export default function RegisterPage() {
                         <Input
                           label="NPWP Number"
                           required
+                          error={errors.npwpNumber}
                           placeholder="NPWP Number"
                           value={formData.npwpNumber}
-                          onChange={(e) => handleInputChange("npwpNumber", e.target.value)}
+                          onChange={handleNpwpChange}
                         />
                       </div>
                       <FileUploadInput
                         label="NPWP Number Attachment"
                         required
+                        error={errors.npwpFile}
                         placeholder="NPWP Number.pdf"
                         fileName={formData.npwpFile}
                         onFileSelect={(name) => handleInputChange("npwpFile", name)}
@@ -504,6 +786,7 @@ export default function RegisterPage() {
                       <div>
                         <Input
                           label="SKT Number"
+                          error={errors.sktNumber}
                           placeholder="SKT Number"
                           value={formData.sktNumber}
                           onChange={(e) => handleInputChange("sktNumber", e.target.value)}
@@ -511,6 +794,7 @@ export default function RegisterPage() {
                       </div>
                       <FileUploadInput
                         label="SKT Number Attachment"
+                        error={errors.sktFile}
                         placeholder="SKT Number.pdf"
                         fileName={formData.sktFile}
                         onFileSelect={(name) => handleInputChange("sktFile", name)}
@@ -519,6 +803,7 @@ export default function RegisterPage() {
                       <div>
                         <Input
                           label="SKPP Number"
+                          error={errors.skppNumber}
                           placeholder="SKPP Number"
                           value={formData.skppNumber}
                           onChange={(e) => handleInputChange("skppNumber", e.target.value)}
@@ -526,6 +811,7 @@ export default function RegisterPage() {
                       </div>
                       <FileUploadInput
                         label="SKPP Number Attachment"
+                        error={errors.skppFile}
                         placeholder="SKPP Number.pdf"
                         fileName={formData.skppFile}
                         onFileSelect={(name) => handleInputChange("skppFile", name)}
@@ -534,6 +820,7 @@ export default function RegisterPage() {
                       <div>
                         <Input
                           label="Latest Financial Report"
+                          error={errors.financialReportNumber}
                           placeholder="Latest Financial Report"
                           value={formData.financialReportNumber}
                           onChange={(e) => handleInputChange("financialReportNumber", e.target.value)}
@@ -541,6 +828,7 @@ export default function RegisterPage() {
                       </div>
                       <FileUploadInput
                         label="Latest Financial Report Attachment"
+                        error={errors.financialReportFile}
                         placeholder="Latest Financial Report.pdf"
                         fileName={formData.financialReportFile}
                         onFileSelect={(name) => handleInputChange("financialReportFile", name)}
@@ -549,6 +837,7 @@ export default function RegisterPage() {
                       <div>
                         <Input
                           label="Other Legal Documents"
+                          error={errors.otherDocNumber}
                           placeholder="Other Legal Documents"
                           value={formData.otherDocNumber}
                           onChange={(e) => handleInputChange("otherDocNumber", e.target.value)}
@@ -556,6 +845,7 @@ export default function RegisterPage() {
                       </div>
                       <FileUploadInput
                         label="Other Legal Documents Attachment"
+                        error={errors.otherDocFile}
                         placeholder="Other Legal Documents.pdf"
                         fileName={formData.otherDocFile}
                         onFileSelect={(name) => handleInputChange("otherDocFile", name)}
@@ -569,8 +859,8 @@ export default function RegisterPage() {
                   <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {/* Full Width: Product Brochure / Catalog */}
                     <div className="flex flex-col gap-6 md:col-span-2">
-                      <div className="space-y-4 border border-border/50 bg-blue-50/40 p-6 rounded-xl flex-1 flex flex-col justify-between">
-                        <div>
+                      <div className="space-y-4 border border-border/50 bg-primary/5 p-6 rounded-xl flex-1 flex flex-col justify-between">
+                        <div className="space-y-3">
                           <label className="text-sm font-bold text-primary tracking-wide uppercase block mb-2">
                             Katalog Produk / Brosur
                           </label>
@@ -594,7 +884,7 @@ export default function RegisterPage() {
                       <div className="space-y-4 border border-border/50 bg-white p-6 rounded-xl flex-1 flex flex-col justify-between">
                         <div>
                           <label className="text-sm font-bold text-primary tracking-wide uppercase block mb-2">
-                            Database Barang / Jasa
+                            Database Barang / Jasa <span className="text-secondary">*</span>
                           </label>
                           <p className="text-xs text-muted-foreground leading-relaxed mb-6">
                             Tambahkan daftar barang, material, atau jasa yang disediakan oleh perusahaan Anda beserta kategorinya. Data ini akan disimpan di sistem VMS kami.
@@ -604,6 +894,11 @@ export default function RegisterPage() {
                           items={formData.products}
                           onChange={(newItems) => handleInputChange("products", newItems)}
                         />
+                        {errors.products && (
+                          <span className="text-xs font-semibold text-secondary animate-in fade-in duration-200 mt-2 block">
+                            {errors.products}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -634,7 +929,10 @@ export default function RegisterPage() {
                             Baca Statement Letter Agreement
                           </Button>
 
-                          <label className="flex items-center gap-3 cursor-pointer select-none border border-border/60 p-3 rounded-lg bg-white/50 hover:bg-white transition-colors">
+                          <label className={cn(
+                            "flex items-center gap-3 cursor-pointer select-none border p-3 rounded-lg bg-white/50 hover:bg-white transition-colors",
+                            errors.agreeToStatementLetter ? "border-secondary" : "border-border/60"
+                          )}>
                             <input
                               type="checkbox"
                               checked={formData.agreeToStatementLetter}
@@ -645,6 +943,11 @@ export default function RegisterPage() {
                               Saya menyetujui seluruh isi Statement Letter Agreement
                             </span>
                           </label>
+                          {errors.agreeToStatementLetter && (
+                            <span className="text-xs font-semibold text-secondary animate-in fade-in duration-200 block mt-1">
+                              {errors.agreeToStatementLetter}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -672,6 +975,8 @@ export default function RegisterPage() {
 
                           <FileUploadInput
                             label="Unggah Dokumen Self-Assessment"
+                            required
+                            error={errors.selfAssessmentFile}
                             placeholder="Self Assessment Form.pdf"
                             fileName={formData.selfAssessmentFile}
                             onFileSelect={(name) => handleInputChange("selfAssessmentFile", name)}
@@ -810,7 +1115,8 @@ export default function RegisterPage() {
             </h3>
 
             <div className="flex-1 overflow-y-auto my-6 pr-2 space-y-6">
-              <p className="text-xs text-muted-foreground leading-relaxed bg-blue-50 border border-blue-100 p-3 rounded-xl">
+              <h3 className="text-sm font-bold text-slate-800 mb-2 border-b border-border/30 pb-2">3. Penilaian Mandiri & Integritas</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed bg-primary/5 border border-primary/20 p-3 rounded-xl">
                 Mohon tinjau kembali data pendaftaran Anda sebelum dikirimkan. Data yang telah dikirimkan akan diproses oleh tim Procurement PT Eltran Indonesia untuk verifikasi.
               </p>
 
@@ -857,22 +1163,22 @@ export default function RegisterPage() {
                   <div>
                     <span className="font-semibold text-slate-500 block">Akte Pendirian:</span>
                     <span className="text-slate-800 font-medium">{formData.deedNumber || "-"} ({formData.deedDate || "-"})</span>
-                    <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">{formData.deedFile ? `✓ ${formData.deedFile}` : "✘ Belum diunggah"}</span>
+                    <span className={cn("text-[10px] font-bold block mt-0.5", formData.deedFile ? "text-emerald-600" : "text-slate-400")}>{formData.deedFile ? `✓ ${formData.deedFile}` : "✘ Belum diunggah"}</span>
                   </div>
                   <div>
                     <span className="font-semibold text-slate-500 block">SK Kemenkumham Pendirian:</span>
                     <span className="text-slate-800 font-medium">{formData.skNumber || "-"} ({formData.skDate || "-"})</span>
-                    <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">{formData.skFile ? `✓ ${formData.skFile}` : "✘ Belum diunggah"}</span>
+                    <span className={cn("text-[10px] font-bold block mt-0.5", formData.skFile ? "text-emerald-600" : "text-slate-400")}>{formData.skFile ? `✓ ${formData.skFile}` : "✘ Belum diunggah"}</span>
                   </div>
                   <div>
                     <span className="font-semibold text-slate-500 block">Nomor NPWP:</span>
                     <span className="text-slate-800 font-medium">{formData.npwpNumber || "-"}</span>
-                    <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">{formData.npwpFile ? `✓ ${formData.npwpFile}` : "✘ Belum diunggah"}</span>
+                    <span className={cn("text-[10px] font-bold block mt-0.5", formData.npwpFile ? "text-emerald-600" : "text-slate-400")}>{formData.npwpFile ? `✓ ${formData.npwpFile}` : "✘ Belum diunggah"}</span>
                   </div>
                   <div>
                     <span className="font-semibold text-slate-500 block">Nomor NIB:</span>
                     <span className="text-slate-800 font-medium">{formData.nibNumber || "-"} ({formData.nibDate || "-"})</span>
-                    <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">{formData.nibFile ? `✓ ${formData.nibFile}` : "✘ Belum diunggah"}</span>
+                    <span className={cn("text-[10px] font-bold block mt-0.5", formData.nibFile ? "text-emerald-600" : "text-slate-400")}>{formData.nibFile ? `✓ ${formData.nibFile}` : "✘ Belum diunggah"}</span>
                   </div>
                 </div>
               </div>
@@ -885,7 +1191,7 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
                   <div>
                     <span className="font-semibold text-slate-500 block">Brosur / Katalog Produk:</span>
-                    <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">{formData.brochureFile ? `✓ ${formData.brochureFile}` : "✘ Belum diunggah"}</span>
+                    <span className={cn("text-[10px] font-bold block mt-0.5", formData.brochureFile ? "text-emerald-600" : "text-slate-400")}>{formData.brochureFile ? `✓ ${formData.brochureFile}` : "✘ Belum diunggah"}</span>
                   </div>
                   <div>
                     <span className="font-semibold text-slate-500 block">Total Data Barang/Jasa:</span>
@@ -899,14 +1205,14 @@ export default function RegisterPage() {
                 <h4 className="text-xs font-bold text-primary uppercase tracking-widest border-l-2 border-secondary pl-2 mb-3">
                   Dokumen Pendukung & Pakta Integritas (Step 5)
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
-                  <div>
-                    <span className="font-semibold text-slate-500 block">Statement Letter Agreement:</span>
-                    <span className="text-emerald-600 font-bold">✓ Disetujui (Pakta Integritas)</span>
+                <div className="grid grid-cols-1 gap-3 text-xs bg-slate-50/50 p-4 rounded-xl border border-border/40">
+                  <div className="flex justify-between items-center bg-slate-50 p-2 rounded-lg">
+                    <span className="text-xs font-semibold text-slate-500">Persetujuan Pakta Integritas</span>
+                    <span className={cn("font-bold text-xs", formData.agreeToStatementLetter ? "text-emerald-600" : "text-slate-400")}>{formData.agreeToStatementLetter ? "✓ Disetujui" : "✘ Belum Disetujui"}</span>
                   </div>
-                  <div>
-                    <span className="font-semibold text-slate-500 block">Self-Assessment Form:</span>
-                    <span className="text-emerald-600 font-bold">✓ {formData.selfAssessmentFile}</span>
+                  <div className="flex justify-between items-center bg-slate-50 p-2 rounded-lg mt-2">
+                    <span className="text-xs font-semibold text-slate-500">Dokumen Self-Assessment</span>
+                    <span className={cn("font-bold text-xs", formData.selfAssessmentFile ? "text-emerald-600" : "text-slate-400")}>{formData.selfAssessmentFile ? `✓ ${formData.selfAssessmentFile}` : "✘ Belum diunggah"}</span>
                   </div>
                 </div>
               </div>

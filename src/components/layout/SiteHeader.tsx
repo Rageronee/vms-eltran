@@ -19,15 +19,15 @@ export function SiteHeader() {
     }
 
     const handleScroll = () => {
-      if (window.scrollY > 80) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      const scrolled = window.scrollY > 80;
+      setIsScrolled((prev) => {
+        if (prev === scrolled) return prev;
+        return scrolled;
+      });
     };
 
     handleScroll();
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLanding]);
 
@@ -66,15 +66,6 @@ export function SiteHeader() {
         </Link>
         <nav className="flex items-center gap-6">
           <div className="hidden md:flex items-center gap-6 mr-2">
-            <Link
-              href="/#features"
-              className={cn(
-                "text-xs font-bold tracking-wider uppercase transition-colors duration-300 hover:text-secondary cursor-pointer",
-                isScrolled ? "text-primary/75" : "text-white/75"
-              )}
-            >
-              Key Features
-            </Link>
             <Link
               href="/register"
               className={cn(
