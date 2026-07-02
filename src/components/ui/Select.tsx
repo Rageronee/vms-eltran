@@ -16,6 +16,7 @@ interface SelectProps {
   label?: string;
   placeholder?: string;
   required?: boolean;
+  error?: string;
   className?: string;
 }
 
@@ -26,6 +27,7 @@ export function Select({
   label,
   placeholder = "Pilih opsi...",
   required = false,
+  error,
   className,
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,7 +54,7 @@ export function Select({
   return (
     <div className="flex flex-col gap-2 w-full" ref={containerRef}>
       {label && (
-        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <label className="text-sm font-semibold text-foreground">
           {label} {required && <span className="text-secondary">*</span>}
         </label>
       )}
@@ -61,7 +63,10 @@ export function Select({
           type="button"
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            "flex h-12 w-full items-center justify-between rounded-xl border border-border/60 bg-slate-50 px-4 text-sm font-semibold text-slate-800 transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 cursor-pointer",
+            "flex h-12 w-full items-center justify-between rounded-xl border bg-surface-dim px-4 py-2 text-sm text-foreground transition-all focus-visible:outline-none focus-visible:ring-1 shadow-sm cursor-pointer",
+            error
+              ? "border-secondary focus-visible:ring-secondary focus-visible:bg-white"
+              : "border-border/50 focus-visible:ring-primary focus-visible:bg-white hover:border-primary/50",
             className
           )}
         >
@@ -108,6 +113,11 @@ export function Select({
           </div>
         )}
       </div>
+      {error && (
+        <span className="text-xs font-semibold text-secondary animate-in fade-in duration-200">
+          {error}
+        </span>
+      )}
     </div>
   );
 }

@@ -3,17 +3,10 @@ import { cn } from "@/lib/utils";
 interface StepperProps {
   current: number;
   onJump?: (step: number) => void;
+  steps: string[];
 }
 
-const steps = [
-  "BASIC INFORMATION",
-  "COMPANY PROFILE",
-  "DOCUMENT VAULT",
-  "PRODUCT & CATALOG",
-  "SUPPORTING DOCS",
-];
-
-export function Stepper({ current, onJump }: StepperProps) {
+export function Stepper({ current, onJump, steps }: StepperProps) {
   return (
     <div className="w-full">
       <nav aria-label="Progress">

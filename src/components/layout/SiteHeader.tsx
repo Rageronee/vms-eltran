@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { LogIn } from "lucide-react";
+import { LogIn, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function SiteHeader() {
   const pathname = usePathname();
   const isLanding = pathname === "/";
   const [isScrolled, setIsScrolled] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     if (!isLanding) {
@@ -64,7 +66,7 @@ export function SiteHeader() {
             <span className="hidden md:inline">Vendor Management System</span>
           </span>
         </Link>
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-6 mr-2">
             <Link
               href="/register"
@@ -73,7 +75,7 @@ export function SiteHeader() {
                 isScrolled ? "text-primary/75" : "text-white/75"
               )}
             >
-              Partnership
+              {t("header.partnership")}
             </Link>
           </div>
           <Link
@@ -86,8 +88,21 @@ export function SiteHeader() {
             )}
           >
             <LogIn className="size-4" />
-            Login
+            {t("header.login")}
           </Link>
+          <button
+            onClick={() => setLanguage(language === "id" ? "en" : "id")}
+            className={cn(
+              "flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase transition-all duration-300 px-3.5 py-2.5 rounded-full border cursor-pointer hover:scale-105 shadow-sm",
+              isScrolled
+                ? "text-primary border-primary/30 hover:border-primary/60 hover:bg-slate-50 bg-white"
+                : "text-white border-white/20 hover:border-white/50 hover:bg-white/10 bg-white/5"
+            )}
+            title="Switch Language"
+          >
+            <Globe className="size-3.5" />
+            <span>{language === "id" ? "EN" : "ID"}</span>
+          </button>
         </nav>
       </div>
     </header>

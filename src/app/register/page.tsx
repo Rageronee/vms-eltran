@@ -8,9 +8,12 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Stepper } from "@/components/ui/Stepper";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { TableData } from "@/components/ui/TableData";
 import { ChevronLeft, ArrowRight, FileText, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocationData, LocationOption } from "@/hooks/useLocationData";
+import { useLanguage } from "@/context/LanguageContext";
 // Interactive File Upload Input Component
 const FileUploadInput = ({
   label,
@@ -88,6 +91,12 @@ const FileUploadInput = ({
 export default function RegisterPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+
+  // Location Data
+  const { t, language } = useLanguage();
+  const { countries, provinces, fetchRegencies, fetchDistricts, isLoading } = useLocationData();
+  const [regencies, setRegencies] = useState<LocationOption[]>([]);
+  const [districts, setDistricts] = useState<LocationOption[]>([]);
   const [submitError, setSubmitError] = useState("");
   const [isStatementOpen, setIsStatementOpen] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -177,6 +186,25 @@ export default function RegisterPage() {
     if (digits.length > 12) formatted += "." + digits.slice(12, 15);
     return formatted;
   };
+
+  // Location Effects
+  useEffect(() => {
+    const selectedProv = provinces.find(p => p.name === formData.province);
+    if (selectedProv) {
+      fetchRegencies(selectedProv.id).then(setRegencies);
+    } else {
+      setRegencies([]);
+    }
+  }, [formData.province, provinces]);
+
+  useEffect(() => {
+    const selectedReg = regencies.find(r => r.name === formData.city);
+    if (selectedReg) {
+      fetchDistricts(selectedReg.id).then(setDistricts);
+    } else {
+      setDistricts([]);
+    }
+  }, [formData.city, regencies]);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -446,15 +474,25 @@ export default function RegisterPage() {
         {/* Spacious Main Container with pt-36 offset for Fixed Header */}
         <main className="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-6 pt-36 pb-12 lg:px-10">
           <div className="rounded-4xl bg-white p-5 sm:p-8 md:p-14 shadow-elegant border border-border/40 backdrop-blur-sm">
-            <Stepper current={step} onJump={handleStepJump} />
+            <Stepper
+              current={step}
+              onJump={handleStepJump}
+              steps={[
+                t("stepper.basicInfo"),
+                t("stepper.companyProfile"),
+                t("stepper.documentsVault"),
+                t("stepper.productCatalog"),
+                t("stepper.supportingDocs"),
+              ]}
+            />
 
             <div className="mt-16 border-t border-border/60 pt-12">
               <h2 className="text-xl font-bold tracking-widest text-primary uppercase mb-10 text-center md:text-left">
-                {step === 1 && "Basic Information"}
-                {step === 2 && "Company Profile"}
-                {step === 3 && "Documents Vault"}
-                {step === 4 && "Product & Catalog"}
-                {step === 5 && "Supporting Documents"}
+                {step === 1 && t("step1.title")}
+                {step === 2 && t("step2.title")}
+                {step === 3 && t("step3.title")}
+                {step === 4 && t("stepper.productCatalog")}
+                {step === 5 && t("stepper.supportingDocs")}
               </h2>
 
               <form className="mt-6" onSubmit={(e) => e.preventDefault()}>
@@ -463,7 +501,7 @@ export default function RegisterPage() {
                   <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="flex flex-col gap-3">
                       <label className="text-sm font-semibold text-foreground">
-                        Region Type <span className="text-secondary">*</span>
+                        {t("step1.regionType")} <span className="text-secondary">*</span>
                       </label>
                       <div className="inline-flex w-fit rounded-xl bg-surface-muted p-1 border border-border/30">
                         {(["Indonesia", "Internasional"] as const).map((r) => (
@@ -474,7 +512,7 @@ export default function RegisterPage() {
                             className={`rounded-lg px-6 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer ${formData.region === r ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:text-primary"
                               }`}
                           >
-                            {r}
+                            {r === "Indonesia" ? t("step1.indonesia") : t("step1.international")}
                           </button>
                         ))}
                       </div>
@@ -482,43 +520,43 @@ export default function RegisterPage() {
 
                     <div className="grid gap-8 md:grid-cols-2">
                       <Input
-                        label="Company Type"
+                        label={t("step1.companyType")}
                         required
                         error={errors.companyType}
-                        placeholder="e.g. PT, CV, UD"
+                        placeholder={t("step1.companyTypePlaceholder")}
                         value={formData.companyType}
                         onChange={(e) => handleInputChange("companyType", e.target.value)}
                       />
                       <Input
-                        label="Company Name"
+                        label={t("step1.companyName")}
                         required
                         error={errors.companyName}
-                        placeholder="e.g. Eltran Indonesia"
+                        placeholder={t("step1.companyNamePlaceholder")}
                         value={formData.companyName}
                         onChange={(e) => handleInputChange("companyName", e.target.value)}
                       />
                       <Input
-                        label="Business Field"
+                        label={t("step1.businessField")}
                         required
                         error={errors.businessField}
-                        placeholder="e.g. Telecommunications"
+                        placeholder={t("step1.businessFieldPlaceholder")}
                         value={formData.businessField}
                         onChange={(e) => handleInputChange("businessField", e.target.value)}
                       />
                       <Input
-                        label="Sub Business Field"
+                        label={t("step1.subBusinessField")}
                         required
                         error={errors.subBusinessField}
-                        placeholder="e.g. Fiber Optic Construction"
+                        placeholder={t("step1.subBusinessFieldPlaceholder")}
                         value={formData.subBusinessField}
                         onChange={(e) => handleInputChange("subBusinessField", e.target.value)}
                       />
                       <div className="md:col-span-2">
                         <Input
-                          label="Company Owner / CEO Name"
+                          label={t("step1.ceoName")}
                           required
                           error={errors.ceoName}
-                          placeholder="Full Name"
+                          placeholder={t("step1.ceoNamePlaceholder")}
                           value={formData.ceoName}
                           onChange={(e) => handleInputChange("ceoName", e.target.value)}
                         />
@@ -531,53 +569,64 @@ export default function RegisterPage() {
                 {step === 2 && (
                   <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="grid gap-8 md:grid-cols-2">
-                      <Input
-                        label="Country"
+                      <Select
+                        label={t("step2.country")}
                         required
                         error={errors.country}
-                        placeholder="e.g. Indonesia"
+                        options={countries.map(c => ({ value: c.name, label: c.name }))}
+                        placeholder={isLoading ? t("common.loading") : t("step2.countryPlaceholder")}
                         value={formData.country}
-                        onChange={(e) => handleInputChange("country", e.target.value)}
+                        onChange={(val) => handleInputChange("country", val)}
                       />
-                      <Input
-                        label="Province"
+                      <Select
+                        label={t("step2.province")}
                         required
                         error={errors.province}
-                        placeholder="e.g. Jawa Barat"
+                        options={provinces.map(p => ({ value: p.name, label: p.name }))}
+                        placeholder={isLoading ? t("common.loading") : t("step2.provincePlaceholder")}
                         value={formData.province}
-                        onChange={(e) => handleInputChange("province", e.target.value)}
+                        onChange={(val) => {
+                          handleInputChange("province", val);
+                          handleInputChange("city", "");
+                          handleInputChange("district", "");
+                        }}
                       />
-                      <Input
-                        label="City"
+                      <Select
+                        label={t("step2.city")}
                         required
                         error={errors.city}
-                        placeholder="e.g. Bandung"
+                        options={regencies.map(r => ({ value: r.name, label: r.name }))}
+                        placeholder={isLoading ? t("common.loading") : t("step2.cityPlaceholder")}
                         value={formData.city}
-                        onChange={(e) => handleInputChange("city", e.target.value)}
+                        onChange={(val) => {
+                          handleInputChange("city", val);
+                          handleInputChange("district", "");
+                        }}
                       />
-                      <Input
-                        label="District"
+                      <Select
+                        label={t("step2.district")}
                         required
                         error={errors.district}
-                        placeholder="e.g. Coblong"
+                        options={districts.map(d => ({ value: d.name, label: d.name }))}
+                        placeholder={isLoading ? t("common.loading") : t("step2.districtPlaceholder")}
                         value={formData.district}
-                        onChange={(e) => handleInputChange("district", e.target.value)}
+                        onChange={(val) => handleInputChange("district", val)}
                       />
                       <div className="col-span-full">
                         <Input
-                          label="Full Address"
+                          label={t("step2.fullAddress")}
                           required
                           error={errors.fullAddress}
-                          placeholder="Detailed street address, office suite, block..."
+                          placeholder={t("step2.fullAddressPlaceholder")}
                           value={formData.fullAddress}
                           onChange={(e) => handleInputChange("fullAddress", e.target.value)}
                         />
                       </div>
                       <Input
-                        label="Zip Code"
+                        label={t("step2.zipCode")}
                         required
                         error={errors.zipCode}
-                        placeholder="e.g. 40135"
+                        placeholder={t("step2.zipCodePlaceholder")}
                         value={formData.zipCode}
                         onChange={handleZipCodeChange}
                       />
@@ -587,45 +636,45 @@ export default function RegisterPage() {
 
                     <div className="grid gap-8 md:grid-cols-2">
                       <Input
-                        label="Company Phone Number"
+                        label={t("step2.phone")}
                         type="tel"
                         required
                         error={errors.phone}
-                        placeholder="+62..."
+                        placeholder={t("step2.phonePlaceholder")}
                         value={formData.phone}
                         onChange={handlePhoneChange}
                       />
                       <Input
-                        label="Company Fax"
+                        label={t("step2.fax")}
                         type="tel"
                         error={errors.fax}
-                        placeholder="+62..."
+                        placeholder={t("step2.faxPlaceholder")}
                         value={formData.fax}
                         onChange={handleFaxChange}
                       />
                       <Input
-                        label="Company Email Address"
+                        label={t("step2.email")}
                         type="email"
                         required
                         error={errors.email}
-                        placeholder="procurement@company.com"
+                        placeholder={t("step2.emailPlaceholder")}
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
                       />
                       <Input
-                        label="Company Website"
+                        label={t("step2.website")}
                         type="url"
                         error={errors.website}
-                        placeholder="https://company.com"
+                        placeholder={t("step2.websitePlaceholder")}
                         value={formData.website}
                         onChange={(e) => handleInputChange("website", e.target.value)}
                       />
                       <div className="col-span-full">
                         <Input
-                          label="Our Product / Services Description"
+                          label={t("step2.description")}
                           required
                           error={errors.description}
-                          placeholder="Briefly describe products/services offered"
+                          placeholder={t("step2.descriptionPlaceholder")}
                           value={formData.description}
                           onChange={(e) => handleInputChange("description", e.target.value)}
                         />
@@ -1005,13 +1054,13 @@ export default function RegisterPage() {
                       className="px-6 group cursor-pointer"
                     >
                       <ChevronLeft className="size-4 mr-2 transition-transform group-hover:-translate-x-0.5" />
-                      Kembali
+                      {t("common.back")}
                     </Button>
                   ) : (
                     <Button asChild variant="ghost" className="px-6 group cursor-pointer">
                       <Link href="/">
                         <ChevronLeft className="size-4 mr-2 transition-transform group-hover:-translate-x-0.5" />
-                        Kembali
+                        {t("common.back")}
                       </Link>
                     </Button>
                   )}
@@ -1022,7 +1071,7 @@ export default function RegisterPage() {
                       onClick={next}
                       className="px-10 group bg-primary hover:bg-primary-hover text-white cursor-pointer"
                     >
-                      Next Step
+                      {t("common.nextStep")}
                       <ArrowRight className="size-4 ml-2 transition-transform group-hover:translate-x-0.5" />
                     </Button>
                   ) : (
@@ -1031,7 +1080,7 @@ export default function RegisterPage() {
                       onClick={handleSubmitClick}
                       className="w-full sm:w-auto px-10 bg-secondary hover:bg-secondary-hover text-white shadow-elegant group cursor-pointer animate-pulse"
                     >
-                      Submit Registration
+                      {t("common.submitRegistration")}
                       <ArrowRight className="size-4 ml-2 transition-transform group-hover:translate-x-0.5" />
                     </Button>
                   )}
